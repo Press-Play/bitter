@@ -1,0 +1,35 @@
+.profile_padding {
+	padding: 5px;
+}
+
+.profile_username {
+	
+}
+
+.profile_picture {
+	
+}
+
+	.profile_picture img {
+		max-width: 100%;
+		max-height: 100%;
+	}
+
+.profile_bleats {
+	
+}
+
+.profile_listeners {
+	
+}
+
+.profile_listening {
+	
+}
+
+
+.disclaimer {
+	padding: 5px;
+	font-size: 10px;
+	color: #808080;
+}

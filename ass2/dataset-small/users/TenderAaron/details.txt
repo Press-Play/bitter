@@ -1,0 +1,8 @@
+full_name: Aaron Peirsol
+home_latitude: -33.9255
+home_longitude: 151.0256
+home_suburb: Bankstown
+email: A.Peirsol@unsw.edu.au
+listens: VitaliKlitschko DaisyFuentes ChocolateMarisa56
+password: oliver
+username: TenderAaron

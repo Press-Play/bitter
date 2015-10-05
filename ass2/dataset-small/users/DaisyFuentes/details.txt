@@ -1,0 +1,8 @@
+listens: VitaliKlitschko TenderAaron ChocolateMarisa56
+home_longitude: 151.2323
+email: D.Fuentes@unsw.edu.au
+full_name: Daisy Fuentes
+home_latitude: -33.9186
+password: giants
+home_suburb: University Of New South Wales
+username: DaisyFuentes

@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<title>Bitter</title>
+		<TMPL_INCLUDE NAME="includes.tmpl">
+	</head>
+
+	<body>
+		<div class="container_page">
+			<TMPL_IF LOGGED_IN>
+
+				<TMPL_INCLUDE NAME="dash.tmpl">
+
+			<TMPL_ELSE>
+
+				<TMPL_INCLUDE NAME="login.tmpl">
+
+			</TMPL_IF>
+		</div>
+	</body>
+</html>

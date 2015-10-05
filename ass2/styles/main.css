@@ -1,0 +1,42 @@
+.container_page {
+	height: 100vh;
+	width:100vw;
+	display: -webkit-flex;
+	display: flex;
+	background-color: #f2f2f2;
+	overflow: scroll;
+	overflow-x: hidden;
+	font-family: 'Oxygen';
+	color: #4A4A4A;
+	-webkit-font-smoothing: antialiased;
+}
+
+	.container_left {
+		height: 100%;
+		width: 20%;
+		padding: 20px;
+	}
+
+	.container_middle {
+		height: 100%;
+		width: 60%;
+		padding: 20px;
+	}
+
+	.container_right {
+		height: 100%;
+		width: 20%;
+		padding: 20px;
+	}
+
+	.container_login {
+		display: flex;
+		display: -webkit-flex;
+		height: auto;
+		width: 400px;
+		padding: 10px;
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
