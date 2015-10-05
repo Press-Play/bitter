@@ -42,7 +42,7 @@ $param_password = param('password') || '';
 # Reset all template variables
 $template->param(LOGGED_IN => TRUE);
 $template->param(PROFILE_USERNAME => "TestUsername");
-$template->param(PROFILE_PICTURE => "/dataset-small/users/DaisyFuentes/profile.jpg");
+$template->param(PROFILE_PICTURE => "../dataset-small/users/DaisyFuentes/profile.jpg");
 $template->param(PROFILE_BLEATS => 7);
 $template->param(PROFILE_LISTENERS => 45);
 $template->param(PROFILE_LISTENING => 60);
