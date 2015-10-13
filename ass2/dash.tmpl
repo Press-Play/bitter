@@ -1,25 +1,14 @@
 <div class="container_left">
-	<div class="card">
-		<div class="profile_padding profile_username">
-			<TMPL_VAR NAME=PROFILE_USERNAME>
-		</div>
-		<div class="profile_padding profile_picture">
-			 <img src="<TMPL_VAR NAME=PROFILE_PICTURE>">
-		</div>
-		<div class="break"></div>
-		<div class="card2 stats profile_bleats"><TMPL_VAR NAME=PROFILE_BLEATS> bleats</div>
-		<div class="card2 stats profile_listeners"><TMPL_VAR NAME=PROFILE_LISTENERS> listeners</div>
-		<div class="card2 stats profile_listening"><TMPL_VAR NAME=PROFILE_LISTENING> listening</div>
-	</div>
+	
+	<TMPL_INCLUDE NAME="card_home.tmpl">
+
 </div>
 
 <div class="container_middle">
-	<div class="card"></div>
-	<div class="break"></div>
-	<div class="card"></div>
-	<div class="card"></div>
-	<div class="card"></div>
-	<div class="break"></div>
+	
+	<TMPL_INCLUDE NAME="bleat_poster.tmpl">
+	<TMPL_INCLUDE NAME="bleat_feed.tmpl">
+
 </div>
 
 <div class="container_right">

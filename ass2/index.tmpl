@@ -8,11 +8,19 @@
 		<div class="container_page">
 			<TMPL_IF LOGGED_IN>
 
-				<TMPL_INCLUDE NAME="dash.tmpl">
+				<TMPL_IF PAGE_PROFILE>
+					<TMPL_INCLUDE NAME="profile.tmpl">
+				<TMPL_ELSE>
+					<TMPL_INCLUDE NAME="dash.tmpl">
+				</TMPL_IF>
 
 			<TMPL_ELSE>
 
-				<TMPL_INCLUDE NAME="login.tmpl">
+				<TMPL_IF PAGE_SIGNUP>
+					<TMPL_INCLUDE NAME="signup.tmpl">
+				<TMPL_ELSE>
+					<TMPL_INCLUDE NAME="login.tmpl">
+				</TMPL_IF>
 
 			</TMPL_IF>
 		</div>

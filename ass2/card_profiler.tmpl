@@ -1,0 +1,24 @@
+<div class="card">
+	<TMPL_IF PROFILE_PROFILE>
+		<div class="card2 stats menu profile_unlisten disabled">Listening</div>
+	<TMPL_ELSE>
+		<TMPL_IF LISTENS_TO>
+			<a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>&action=unlisten">
+				<div class="card2 stats menu profile_unlisten">Unlisten</div>
+			</a>
+		<TMPL_ELSE>
+			<a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>&action=listen">
+				<div class="card2 stats menu profile_listen">Listen</div>
+			</a>
+		</TMPL_IF>
+	</TMPL_IF>
+	<input type="hidden" name"profile_username" value="<TMPL_VAR NAME=PROFILE_USERNAME>"></input>
+
+	<div class="break"></div>
+	<p class="profile_title">Listens to</p>
+	<TMPL_LOOP NAME=LOOP_LISTENS>
+		<a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=USERNAME>">
+			<div class="card2 listens"><TMPL_VAR NAME=USERNAME></div>
+		</a>
+	</TMPL_LOOP>
+</div>

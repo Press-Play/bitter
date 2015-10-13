@@ -66,3 +66,15 @@
 	height: 20px;
 	opacity: 0;
 }
+
+.login_signup {
+	pointer-events: all;
+	text-align: center;
+	text-decoration: none;
+}
+
+	.login_signup p {
+		font-size: 10px;
+		padding-top: 5px;
+		color: #228B22;
+	}

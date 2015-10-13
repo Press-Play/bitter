@@ -1,0 +1,72 @@
+/*
+	Middle pane
+*/
+.profile_picture {
+	text-align: center;
+	padding: 15px;
+}
+
+	.profile_picture img {
+		border: 2px solid #228B22;
+	}
+
+.profile_name {
+	text-align: center;
+	font-size: 28px;
+	padding: 5px;
+}
+
+.profile_username {
+	text-align: center;
+	font-size: 16px;
+	padding: 5px;
+}
+
+.profile_stats_container {
+	display: flex;
+	display: -webkit-flex;
+	padding-left: 15%;
+	padding-right: 15%;
+}
+
+	.profile_stats_container .stats {
+		text-align: center;
+	}
+		.profile_stats_container .stats p {
+			font-size: 22px;
+		}
+	.profile_bleats {
+		width: calc(100%/3);
+	}
+	.profile_listeners {
+		width: calc(100%/3);
+	}
+	.profile_listening {
+		width: calc(100%/3);
+	}
+
+
+/*
+	Left pane
+*/
+.profile_listen {
+	font-weight: 800;
+	font-size: 20px;
+	text-align: center;
+	background-color: #228B22;
+	color: white;
+}
+
+.profile_unlisten {
+	font-weight: 800;
+	font-size: 20px;
+	text-align: center;
+	background-color: #979797;
+	color: white;
+}
+
+.profile_title {
+	text-align: center;
+	padding: 10px;
+	font-size: 14px;
+}

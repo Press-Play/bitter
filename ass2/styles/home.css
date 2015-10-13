@@ -1,0 +1,40 @@
+.home_name {
+	font-weight: 800;
+	text-align: center;
+}
+
+.home_picture {
+	padding: 5px;
+}
+
+.home_picture img {
+	max-width: calc(100% - 4px);
+	max-height: calc(100% - 4px);
+	border: 2px solid #228B22;
+}
+
+.disclaimer {
+	padding: 5px;
+	font-size: 10px;
+	color: #808080;
+	line-height: 200%;
+}
+
+.menu_icon {
+	pointer-events: all;
+	display: flex;
+	display: -webkit-flex;
+}
+.menu_icon div {
+	padding-left: 8px;
+	line-height: 24px;
+	white-space: nowrap;
+}
+.menu_icon img {
+	max-width: 24px;
+	max-height: 24px;
+	opacity: .4;
+}
+.menu_icon img:hover {
+	opacity: .9;
+}

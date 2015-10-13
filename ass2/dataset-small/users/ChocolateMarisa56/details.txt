@@ -1,8 +1,0 @@
-listens: VitaliKlitschko DaisyFuentes TenderAaron
-email: M.Tomei@unsw.edu.au
-full_name: Marisa Tomei
-password: doctor
-username: ChocolateMarisa56
-home_latitude: -33.7858
-home_suburb: Queenscliff
-home_longitude: 151.2804

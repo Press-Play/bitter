@@ -1,8 +1,0 @@
-email: V.Klitschko@unsw.edu.au
-password: aaaa
-full_name: Vitali Klitschko
-home_latitude: -33.9667
-home_suburb: Matraville
-listens: DaisyFuentes TenderAaron ChocolateMarisa56
-home_longitude: 151.2301
-username: VitaliKlitschko
