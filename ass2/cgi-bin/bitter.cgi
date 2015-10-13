@@ -11,7 +11,7 @@
 
 
 # Clear the terminal before starting
-for($i=0;$i<25;$i++){$CONFIG_DEBUG=TRUE;debug("");}
+for($i=0;$i<45;$i++){$CONFIG_DEBUG=TRUE;debug("");}
 
 # ------------------------------------------------------------
 # 	MODULES AND SETUP
@@ -111,6 +111,33 @@ sub debug {
 }
 
 # ------------------------------------------------------------
+# 	HELPER FUNCTIONS FOR HELPER FUNCTIONS
+# ------------------------------------------------------------
+# Finds the key in a hash with the max magnitude
+sub max_key(\%) {
+	my $_hash = shift;
+	keys %$_hash;       # reset the each iterator
+
+	my ($large_key, $large_val) = each %$_hash;
+
+	while (my ($key, $val) = each %$_hash) {
+		if ($val > $large_val) {
+			# $large_val = $val;
+			$large_key = $key;
+		}
+	}
+	return $large_key;
+}
+
+# Pushes an array (1) onto the end of another array (0)
+sub push_array(\@; \@) {
+	for $_item (@{$_[1]}) {
+		push(@{$_[0]}, $_item);
+	}
+	return $_[0];
+}
+
+# ------------------------------------------------------------
 # 	HELPER FUNCTIONS
 # ------------------------------------------------------------
 #
@@ -154,6 +181,8 @@ sub storable_new {
 					shift @_props;
 					$_propy = join  "", @_props;
 					chomp $_propy;
+					$_propy =~ s/^\s+//;	# WHITESPACE_LEADING
+					$_propy =~ s/\s+$//;	# WHITESPACE_TRAILING
 					$store{"users"}{$key}{$_setty} = $_propy;
 				}
 			close(F);
@@ -183,6 +212,8 @@ sub storable_new {
 				shift @_props;
 				$_propy = join  "", @_props;
 				chomp $_propy;
+				$_propy =~ s/^\s+//;	# WHITESPACE_LEADING
+				$_propy =~ s/\s+$//;	# WHITESPACE_TRAILING
 				$result{$_setty} = $_propy;
 				$store{"bleats"}{$key}{$_setty} = $_propy;
 			}
@@ -207,7 +238,8 @@ sub storable_retrieve {
 }
 
 sub storable_update {
-	if (store_updated) {
+	if ($store_updated) {
+		debug("============================== Updating existing hash database. ==============================");
 		store \%store, 'store.db';
 	}
 }
@@ -241,7 +273,7 @@ sub valid_credentials {
 		$_result = C_ERROR;
 		@_details = <F>;
 		@_listens = grep { $_ =~ /password\:/ } @_details;
-		debug("password for $param_username:", chomp $_listens[0]);
+		# debug("password for $param_username:", chomp $_listens[0]);
 		@_listens = split " ", $_listens[0];
 		if ($_listens[1] eq $param_password) {
 			$_result = C_VALID;
@@ -275,14 +307,35 @@ sub user_listens_to {
 #
 #	PARAMETERS - WRITING (to store)
 #
+# Post a bleat
+# TODO
+sub parameters_put_new_bleat {
+	# Get the bleat_id with biggest value.
+	$_bleats_ref = \%{$store{'bleats'}};
+	debug("_bleat_ref = $_bleats_ref");
+	debug(Dumper($_bleat_ref));
+	# $_m = max_key(\%{$store{'bleats'});
+	# debug("$_m");
+	# $store{'users'}{$param_username}{'listens'}
+}
+
 # Listen to a new person (by username)
 sub parameters_put_new_listen {
 	$store{'users'}{$param_username}{'listens'} .= " ".$_[0];
+	$store_updated = TRUE;
 }
 
 # Unlisten someone (by username)
 sub parameters_del_listen {
-	delete $store{'users'}{$param_username}{$_[0]};
+	# debug("Trying to delete $_[0]");
+	@_listens_old = split " ", $store{'users'}{$param_username}{'listens'};
+	$_listens_new = "";
+	foreach $_l (@_listens_old) {
+		$_listens_new .= $_l." " if ($_l ne $_[0]);
+	}
+	$_listens_new =~ s/\s+$//;
+	$store{'users'}{$param_username}{'listens'} = $_listens_new;
+	$store_updated = TRUE;
 }
 
 #
@@ -294,7 +347,7 @@ sub parameters_get_bleat_ids {
 	# Go through bleats.txt and count how many lines (with a bleat id)
 	open(F, "<", $DATASET_PATH_CGI."/users/${_given_user}/bleats.txt") or die;
 		@_bleats = <F>;
-		@_bleats = grep { $_ =~ /[0-9]+/ } @_bleats;
+		@_bleats = grep( /[0-9]+/, @_bleats );
 	close(F);
 	return \@_bleats;
 }
@@ -302,30 +355,14 @@ sub parameters_get_bleat_ids {
 # Returns array of the people that the given user is listening to
 sub parameters_get_listening {
 	$_given_user = $_[0];
-	# Go through details.txt and count how many "listens" (space delimited)
-	open(F, "<", $DATASET_PATH_CGI."/users/${_given_user}/details.txt") or die;
-		@_details = <F>;
-		@_listens = grep { $_ =~ /listens\:/ } @_details;
-		#debug("listens for $param_username:", chomp $_listens[0]);
-		@_listens = split " ", $_listens[0];
-		shift @_listens;
-		@_listens = sort @_listens;
-	close(F);
+	@_listens = split " ", $store{'users'}{$_given_user}{'listens'};
 	return \@_listens;
 }
 
 # Returns the full name of the given user
 sub parameters_get_name {
 	$_given_user = $_[0];
-	open(F, "<", $DATASET_PATH_CGI."/users/${_given_user}/details.txt") or die;
-		@_details = <F>;
-		@_name = grep { $_ =~ /full_name\:/ } @_details;
-		# debug("name for $_given_user:", chomp $_name[0]);
-		@_name = split " ", $_name[0];
-		shift @_name;
-		$_result = join " ", @_name;
-	close(F);
-	return $_result;
+	return $store{'users'}{$_given_user}{'full_name'};
 }
 
 # Returns all the information related to a given bleat id
@@ -355,7 +392,25 @@ sub parameters_count_bleats {
 }
 sub parameters_count_listeners {
 	$_given_user = $_[0];
-	# Temporarily make 0, otherwise have to open 9999 files
+	# TODO, IF USING THIS STOREAGE METHOD, NEED TO UPDATE ON ADD AND DELETE LISTENS
+	# $_count = 0;
+	# if (exists $store{'users'}{$param_username}{'listeners'}) {
+	# 	return $store{'users'}{$param_username}{'listeners'};
+	# } else {
+	# 	foreach $_db_user ($store{'users'}) {
+	# 		if ($_db_user eq $param_username) { next; }
+	# 		@_temp_listens = @{parameters_get_listening($_db_user)};
+	# 		if (!@_temp_listens) { next; }
+	# 		if ( grep( /^${param_username}$/, @_temp_listens ) ) {
+	# 			$_count++;
+	# 			debug("Found that $_db_user follows $param_username");
+	# 		}
+	# 	}
+	# 	$store{'users'}{$param_username}{'listeners'} = $_count;
+	# 	return $_count;
+	# }
+
+	# Somehow, if these things don't work, return 0
 	return 0;
 }
 sub parameters_count_listening {
@@ -378,11 +433,49 @@ sub parameters_set_username {
 }
 
 sub parameters_set_bleatfeed {
-	parameters_set_username();
-	# Find last 'n' bleats that
+	my @_bleatfeed_ids = ();
+
+	# Find last 'n' bleat ids that
 	#	- current user posted
+	push(@_bleatfeed_ids, @{parameters_get_bleat_ids($param_username)});
 	#	- current user listens to
+	foreach $_list (@{parameters_get_listening($param_username)}) {
+		push_array(@_bleatfeed_ids, @{parameters_get_bleat_ids($_list)});
+	}
 	#	- current user mentioned in
+	foreach $_id (keys %{$store{'bleats'}}) {
+		# debug("$_id");
+		# debug(Dumper(\$store{'bleats'}{$_id}{'bleat'}));
+		# Split by space delimeter
+		@_mentions = split " ", $store{'bleats'}{$_id}{'bleat'};
+		# grep for "@" and "username"
+		if (grep /\@${param_username}/, @_mentions) {
+			push(@_bleatfeed_ids, $_id);
+		}
+	}
+
+	# Order the bleat ids, get bleat info and then put into template params
+	@bleat_data = ();
+	$previous_id = 0;
+	foreach $bleat_id (reverse @_bleatfeed_ids) {
+		chomp $bleat_id;
+		# Check for duplicate ids
+		next if ($bleat_id == $previous_id);
+		$previous_id = $bleat_id;
+
+		my %temp_data;	# "my" keyword needed for a fresh hash
+		my %bleat_me = %{$store{'bleats'}{$bleat_id}};
+		# debug(Dumper(\%bleat_me));
+		$temp_data{BLEAT_TEXT} 			= $bleat_me{'bleat'};
+		$temp_data{BLEAT_TIME} 			= $bleat_me{'time'};
+		$temp_data{BLEAT_LOCATION} 		= "lat:".$bleat_me{'latitude'}."<br>long:".$bleat_me{'longitude'} if ($bleat_me{'latitude'} and $bleat_me{'longitude'});
+		$temp_data{PROFILE_USERNAME} 	= $bleat_me{'username'};
+		$temp_data{PROFILE_PICTURE} 	= $DATASET_PATH_HTML."/users/${bleat_me{'username'}}/profile.jpg";
+		push(@bleat_data, \%temp_data);
+	}
+	$template->param(LOOP_BLEATS => \@bleat_data);
+	#delete @bleat_data;
+
 }
 
 # All the parameters on the template to do with and profile page for a given user
@@ -492,13 +585,21 @@ sub handle_logout {
 sub handle_listen {
 	return if (!$param_action);
 	
-	if (!$param_action ne "listen") {
-		parameters_put_new_listen();
-	} elsif (!$param_action ne "unlisten") {
+	if ($param_action eq "listen") {
+		parameters_put_new_listen($param_profile);
+	} elsif ($param_action eq "unlisten") {
 		parameters_del_listen($param_profile);
 	} else {
 		# Nothing happens, just return
 	}
+}
+
+sub handle_bleat {
+	return if (!$param_action);
+	return if ($param_action ne "bleat");
+
+	debug("User attempted to bleat! (To bad it's not implemented yet)");
+	parameters_put_new_bleat();
 }
 
 #
@@ -543,10 +644,12 @@ sub handle_yes {
 		parameters_set_bleatfeed();
 	}
 
-	# Handles
+	# Handles (actions first, then page)
 	handle_listen();
-	handle_page_profile();
+	handle_bleat();
 	handle_logout();
+
+	handle_page_profile();
 }
 
 # Run this when NOT logged in

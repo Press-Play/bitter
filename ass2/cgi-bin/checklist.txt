@@ -10,8 +10,8 @@ LEVEL 1
 	Sending Bleats (Level 1)
 
 LEVEL 2
-	Displaying Relevant Bleats (Level 2)
-	Listening/Unlistening to Users (Level 2)
+✓	Displaying Relevant Bleats (Level 2)
+✓	Listening/Unlistening to Users (Level 2)
 	Searching Bleats (Level 2)
 	Replying to Bleat(Level 2)
 
@@ -25,7 +25,6 @@ LEVEL 3
 	Editing Infortmation (Level 3)
 	Deleting Bleats (Level 3)
 	Suspending/Deleting Bitter Account (Level 3)
-	Notifications (Level 3)
 	Notifications (Level 3)
 	Bleets Attachment (Level 3)
 
