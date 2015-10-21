@@ -8,21 +8,41 @@
 		<div class="container_page">
 			<TMPL_IF LOGGED_IN>
 
+				<TMPL_IF PAGE_SEARCH>
+					<TMPL_INCLUDE NAME="page_search.tmpl">
+				</TMPL_IF>
+				
 				<TMPL_IF PAGE_PROFILE>
-					<TMPL_INCLUDE NAME="profile.tmpl">
-				<TMPL_ELSE>
-					<TMPL_INCLUDE NAME="dash.tmpl">
+					<TMPL_INCLUDE NAME="page_profile.tmpl">
+				</TMPL_IF>
+
+				<TMPL_IF PAGE_HOME>
+					<TMPL_INCLUDE NAME="page_dash.tmpl">
 				</TMPL_IF>
 
 			<TMPL_ELSE>
 
 				<TMPL_IF PAGE_SIGNUP>
-					<TMPL_INCLUDE NAME="signup.tmpl">
-				<TMPL_ELSE>
-					<TMPL_INCLUDE NAME="login.tmpl">
+					<TMPL_INCLUDE NAME="page_signup.tmpl">
+				</TMPL_IF>
+
+				<TMPL_IF PAGE_FORGOT>
+					<TMPL_INCLUDE NAME="page_forgot.tmpl">
+				</TMPL_IF>
+
+				<TMPL_IF PAGE_CONFIRM>
+					<TMPL_INCLUDE NAME="page_confirm.tmpl">
+				</TMPL_IF>
+
+				<TMPL_IF PAGE_LOGIN>
+					<TMPL_INCLUDE NAME="page_login.tmpl">
 				</TMPL_IF>
 
 			</TMPL_IF>
 		</div>
 	</body>
+
+	<!-- Javascripts -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="../main.js"></script>
 </html>

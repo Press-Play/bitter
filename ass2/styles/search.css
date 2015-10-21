@@ -1,0 +1,36 @@
+.active_search {
+	font-weight: 800;
+}
+
+.search_user_container {
+	display: flex;
+	display: -webkit-flex;
+}
+
+	.search_info {
+		width: 100%;
+		display: flex;
+		display: -webkit-flex;
+	}
+		.search_info_elem {	
+			width: 50%;
+			display: flex;
+			display: -webkit-flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		.search_info_elem p {
+			padding: 5px;
+			margin-left: 10px;
+			pointer-events: all !important;
+		}
+			.search_info_elem_elem {
+				width: 60%;
+			}
+			.name_name {
+				font-weight: 800;
+				font-size: 24px;
+			}
+			.name_username {
+
+			}

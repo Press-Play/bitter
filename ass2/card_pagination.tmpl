@@ -1,0 +1,13 @@
+<div class="card">
+	
+	<div class="per_page_label"><p>Results per page</p></div>
+	<div class="container_pager">
+		<div class="pager <TMPL_IF PAGINATION_10>selected</TMPL_IF>"><a href="bitter.cgi?n=10"><p>10</p></a></div>
+		<div class="pager <TMPL_IF PAGINATION_25>selected</TMPL_IF>"><a href="bitter.cgi?n=25"><p>25</p></a></div>
+		<div class="pager <TMPL_IF PAGINATION_50>selected</TMPL_IF>"><a href="bitter.cgi?n=50"><p>50</p></a></div>
+		<div class="pager <TMPL_IF PAGINATION_100>selected</TMPL_IF>"><a href="bitter.cgi?n=100"><p>100</p></a></div>
+	</div>
+
+	<TMPL_INCLUDE NAME="card_pagenav.tmpl">
+
+</div>

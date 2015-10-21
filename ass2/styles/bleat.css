@@ -53,7 +53,31 @@
 	height: inherit;
 }
 
-	.bleat_display_options {
+.bleat_selected {
+	width: 3px;
+	height: auto;
+	background-color: #228B22;
+}
+.bleat_button_expand {
+	text-align: center;
+	padding-top: 20px;
+	height: auto;
+}
+	.bleat_button_expand img {
+		max-width: 24px;
+		max-height: 24px;
+		opacity: .4;
+		pointer-events: all !important;
+		cursor: pointer;
+	}
+	.flipV {
+		-moz-transform: scaleY(-1) translateY(-24px);
+        -o-transform: scaleY(-1) translateY(-24px);
+        -webkit-transform: scaleY(-1) translateY(-24px);
+        transform: scaleY(-1) translateY(-24px);
+	}
+
+/*	.bleat_display_options {
 		width: 10%;
 		height: inherit;
 		display: flex;
@@ -72,7 +96,7 @@
 		}
 		.option img:hover {
 			opacity: .9;
-		}
+		}*/
 
 	.bleat_display_text {
 		width: 50%;
@@ -86,10 +110,11 @@
 			transform: translate(0, -50%);
 			font-size: 20px;
 			padding-right: 10px;
+			padding-left: 10px;
 		}
 
 	.bleat_display_profile {
-		width: 40%;
+		width: 50%;
 		height: inherit;
 		display: flex;
 		display: -webkit-flex;
@@ -103,15 +128,15 @@
 				height: 100%;
 			}
 		.info_container {
-			width: 50%;
+			width: 60%;
 			height: inherit;
 			display: flex;
 			display: -webkit-flex;
 			flex-direction: column;
-			justify-content: center;
+			justify-content: space-between;
 		}
 		.info {
-			width: 100%;
+			width: 70%;
 			font-size: 12px;
 			/*height: calc(100%/3);*/
 		}
