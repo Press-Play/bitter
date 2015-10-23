@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card profile_card" style="background-image: url('<TMPL_VAR NAME=PROFILE_BACKGROUND>');">
 	<div class="profile_picture">
 		 <img src="<TMPL_VAR NAME=PROFILE_PICTURE>">
 	</div>
@@ -8,6 +8,8 @@
 	<div class="profile_username">
 		@<TMPL_VAR NAME=PROFILE_USERNAME>
 	</div>
+	<div class="break"></div>
+	<div class="profile_description"><TMPL_VAR NAME=PROFILE_DESCRIPTION></div>
 	<div class="break"></div>
 	<div class="profile_stats_container">
 		<div class="card2 stats profile_bleats">

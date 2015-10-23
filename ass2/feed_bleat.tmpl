@@ -10,7 +10,9 @@
 						<div class="card2 info"><TMPL_VAR NAME=BLEAT_TIME></div>
 						<div class="card2 info"><TMPL_VAR NAME=BLEAT_LOCATION></div>
 					</div>
-					<div class="card2 picture_container"><img src="<TMPL_VAR NAME=PROFILE_PICTURE>"></div>
+					<a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>" style="pointer-events: all !important">
+						<div class="card2 picture_container"><img src="<TMPL_VAR NAME=PROFILE_PICTURE>"></div>
+					</a>
 				</div>
 			</div>
 			<div class="bleat_button_expand">

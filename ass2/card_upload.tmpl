@@ -1,0 +1,49 @@
+<a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>">
+	<div class="card2 stats menu home_name">See my profile</div>
+</a>
+<div class="break"></div>
+<form action="bitter.cgi" method="post" enctype='multipart/form-data'>
+
+	<div class="card">
+		<div class="home_picture">
+			 <img src="<TMPL_VAR NAME=PROFILE_PICTURE>">
+		</div>
+		<!-- <div class="break"></div> -->
+	<!-- 	<a href="bitter.cgi?page=settings&action=upload">
+			<div class="card2 stats menu profile_listen">Upload</div>
+		</a> -->
+		<div class="placemarker">
+			<div class="settings_flex">
+				<div class="settings_submit left_submit">
+					<input class="upload" name="file_photo" type="file">
+					Choose photo
+				</div>
+				<a href="bitter.cgi?page=settings&action=deletephoto"><div class="delete_button">x</div></a>
+			</div>
+			<input class="upload_file settings_input" placeholder="Choose File" disabled="disabled" />
+		</div>
+		<div class="break"></div>
+		<div class="home_picture">
+			 <img src="<TMPL_VAR NAME=PROFILE_BACKGROUND>">
+		</div>
+		<div class="placemarker">
+			<div class="settings_flex">
+				<div class="settings_submit left_submit">
+					<input class="upload" name="file_background" type="file">
+					Choose background
+				</div>
+				<a href="bitter.cgi?page=settings&action=deletebackground"><div class="delete_button">x</div></a>
+			</div>
+			<input class="upload_file settings_input" placeholder="Choose File" disabled="disabled" />
+		</div>
+	</div>
+	<div class="break"></div>
+	<div class="card" style="text-align: center">
+		<input type="hidden" name="action" value="upload">
+		<input type="hidden" name="page" value="settings">
+		<input type="submit" class="card2 stats menu profile_listen submit_upload"  value="Upload" >
+	</div>
+
+</form>
+
+<div class="break"></div>

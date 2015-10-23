@@ -24,6 +24,7 @@ use CGI::Cookie;
 use Data::Dumper;
 use HTML::Template;
 use Storable;
+use Net::SMTP;
 
 warningsToBrowser(1);
 
@@ -81,11 +82,18 @@ $param_email		= param('email');
 $param_name 		= param('name');
 $param_username 	= param('username');
 $param_password 	= param('password');
-$param_bleat 		= param('bleat');		# Posting a bleat
-$param_query		= param('query');		# Query search string
-$param_dir			= param('dir');			# Back and next buttons on pagination console
-$param_reply_to		= param('reply_to');	# If a bleat is being replied to - send id of it
-$param_key			= param('key');			# Signup confirmation key
+$param_bleat 		= param('bleat');			# Posting a bleat
+$param_query		= param('query');			# Query search string
+$param_dir			= param('dir');				# Back and next buttons on pagination console
+$param_reply_to		= param('reply_to');		# If a bleat is being replied to - send id of it
+$param_key			= param('key');				# Signup confirmation key
+$param_description	= param('description');		# About me
+$param_home_loc		= param('home_suburb');
+$param_home_lat		= param('home_latitude');
+$param_home_long	= param('home_longitude');
+$param_new_username = param('new_username');
+$param_file_photo	= param('file_photo');
+$param_file_ground	= param('file_background');
 # GET - Sent in url
 $param_action		= param('action');
 $param_page			= param('page');
@@ -95,24 +103,36 @@ $param_set 			= param('p');			if (!$param_set) 		{ $param_set 		= '0'; }; 	# App
 $param_constraint	= param('search');		if (!$param_constraint) { $param_constraint = 'username'; };
 # Any hidden ones
 $param_profile	= param('profile_username') if (!$param_profile);
+# File handles
+# $query = new CGI;
+# $upload_photo 	= $query->upload('file_photo');
+# $upload_ground 	= $query->upload('file_background');
+# $cgi_error		= $query->cgi_error();
+# debug("$cgi_error") if $cgi_error;
+
 
 # TODO: FULLY REFACTOR
 %param	= ();
-$param{'email'} 	= $param_email;
-$param{'name'}		= $param_name;
-$param{'username'} 	= $param_username;
-$param{'password'} 	= $param_password;
-$param{'bleat'} 	= $param_bleat;
-$param{'query'} 	= $param_query;
-$param{'dir'}		= $param_dir;
-$param{'reply_to'}  = $param_reply_to;
-$param{'key'} 		= $param_key;
-$param{'action'}	= $param_action;
-$param{'page'}		= $param_page;
-$param{'profile'} 	= $param_profile;
-$param{'n'} 		= $param_pagination;
-$param{'p'} 		= $param_set;
-$param{'constraint'}= $param_constraint;
+$param{'email'} 		= $param_email;
+$param{'name'}			= $param_name;
+$param{'username'} 		= $param_username;
+$param{'password'} 		= $param_password;
+$param{'bleat'} 		= $param_bleat;
+$param{'query'} 		= $param_query;
+$param{'dir'}			= $param_dir;
+$param{'reply_to'}  	= $param_reply_to;
+$param{'key'} 			= $param_key;
+$param{'action'}		= $param_action;
+$param{'page'}			= $param_page;
+$param{'profile'} 		= $param_profile;
+$param{'n'} 			= $param_pagination;
+$param{'p'} 			= $param_set;
+$param{'constraint'}	= $param_constraint;
+$param{'description'}	= $param_description;
+$param{'home_loc'}		= $param_home_loc;
+$param{'home_lat'}		= $param_home_lat;
+$param{'home_long'}		= $param_home_long;
+$param{'new_username'}	= $param_new_username;
 
 # Cookie declarations
 %cookies 			= CGI::Cookie->fetch;
@@ -126,6 +146,7 @@ $cookie_username	= $cookies{'session'}->value() 	if $cookies{'session'};
 $template->param(LOGGED_IN 			=> FALSE);
 $template->param(PROFILE_USERNAME 	=> "Default");
 $template->param(PROFILE_PICTURE 	=> $PATH_ROOT_HTML."/images/icon_default_256.png");
+$template->param(PROFILE_BACKGROUND => "");
 $template->param(PROFILE_BLEATS 	=> 0);
 $template->param(PROFILE_LISTENERS 	=> 0);
 $template->param(PROFILE_LISTENING 	=> 0);
@@ -240,6 +261,16 @@ sub storable_new {
 					$_propy =~ s/\s+$//;	# WHITESPACE_TRAILING
 					$store{"users"}{$key}{$_setty} = $_propy;
 				}
+				# Count people listening
+				@listening = @{parameters_get_listening($key)};
+				# debug(Dumper(\@listening));
+				foreach $listener (@listening) {
+					if (!exists $store{'users'}{$listener}{'listening'}) {
+						$store{'users'}{$listener}{'listening'} = 1;
+					} else {
+						$store{'users'}{$listener}{'listening'}++;
+					}
+				}
 			close(F);
 		}
 	}
@@ -275,7 +306,7 @@ sub storable_new {
 			# Check for bleat reply to
 			if (exists $store{'bleats'}{$key}{'in_reply_to'}) {
 				$replying_to = $store{'bleats'}{$key}{'in_reply_to'};
-				push(@{$store{'bleats'}{$replying_to}{'replies'}}, $bleat_reply);
+				push(@{$store{'bleats'}{$replying_to}{'replies'}}, $key);
 			}
 		close(F);
 		} else {
@@ -385,7 +416,7 @@ sub signup_exists_username {
 
 sub signup_valid_username {
 	$_result = TRUE;
-	if ((scalar $param_username < 4)
+	if ((length $param_username < 4)
 	or 	!($param_username =~ m/[a-zA-Z0-9]+/g))
 		{ $_result = FALSE; }
 	return $_result;
@@ -400,7 +431,7 @@ sub signup_valid_email {
 
 sub signup_valid_password {
 	$_result = TRUE;
-	if ((scalar $param_password < 5)
+	if ((length $param_password < 5)
 	or 	(!$param_password =~ m/[a-zA-Z0-9]+/g))
 		{ $_result = FALSE; }
 	return $_result;
@@ -446,7 +477,7 @@ sub parameters_put_new_bleat {
 	$store{'bleats'}{$_id}{'username'} 		= $param_username;
 	$store{'bleats'}{$_id}{'time'} 			= "$the_time";
 	$store{'bleats'}{$_id}{'in_reply_to'} 	= $param_reply_to if ($param_reply_to);
-	debug(Dumper($store{'bleats'}{$_id}));
+	# debug(Dumper($store{'bleats'}{$_id}));
 	# debug(Dumper($store{'bleats'}{$param_reply_to}));
 	$store_updated = TRUE;
 }
@@ -482,6 +513,8 @@ sub parameters_get_bleat_ids {
 # Returns array of the people that the given user is listening to
 sub parameters_get_listening {
 	$_given_user = $_[0];
+	my @_listens = ();
+	return \@_listens if (!$store{'users'}{$_given_user}{'listens'});
 	@_listens = split " ", $store{'users'}{$_given_user}{'listens'};
 	return \@_listens;
 }
@@ -505,26 +538,11 @@ sub parameters_count_bleats {
 }
 sub parameters_count_listeners {
 	$_given_user = $_[0];
-	# TODO, IF USING THIS STOREAGE METHOD, NEED TO UPDATE ON ADD AND DELETE LISTENS
-	# $_count = 0;
-	# if (exists $store{'users'}{$param_username}{'listeners'}) {
-	# 	return $store{'users'}{$param_username}{'listeners'};
-	# } else {
-	# 	foreach $_db_user ($store{'users'}) {
-	# 		if ($_db_user eq $param_username) { next; }
-	# 		@_temp_listens = @{parameters_get_listening($_db_user)};
-	# 		if (!@_temp_listens) { next; }
-	# 		if ( grep( /^${param_username}$/, @_temp_listens ) ) {
-	# 			$_count++;
-	# 			debug("Found that $_db_user follows $param_username");
-	# 		}
-	# 	}
-	# 	$store{'users'}{$param_username}{'listeners'} = $_count;
-	# 	return $_count;
-	# }
-
-	# Somehow, if these things don't work, return 0
-	return 0;
+	if (!exists $store{'users'}{$_given_user}{'listening'}) {
+		return 0;
+	} else {
+		return $store{'users'}{$_given_user}{'listening'};
+	}
 }
 sub parameters_count_listening {
 	$_given_user = $_[0];
@@ -617,29 +635,28 @@ sub parameters_set_feeds {
 		# Go through every bleat and push it if it is a reply
 		if (!$param_page or $param_page ne "search") {
 			my @bleat_data_reply;	# Need a new hash here
-			foreach $b (sort {$a <=> $b} keys %{$store{'bleats'}}) {
-				if (exists $store{'bleats'}{$b}{'in_reply_to'}) {
-					if ($store{'bleats'}{$b}{'in_reply_to'} eq $bleat_id) {
-						debug("Found reply for $bleat_id - $b");
-						my %temp_data_reply;
-						my %bleat_me_reply = %{parameters_get_bleatdata($b)};
-						# Fix up time formatting
-						($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($bleat_me_reply{'time'});
-						$year = $year + 1900;
-						$mon += 1;
-						$temp_data_reply{REPLY_TEXT} 		= $bleat_me_reply{'bleat'};
-						$temp_data_reply{REPLY_USERNAME} 	= $bleat_me_reply{'username'};
-						if (-e $DATASET_PATH_CGI."/users/${bleat_me_reply{'username'}}/profile.jpg") {
-							$temp_data_reply{REPLY_PICTURE} = $DATASET_PATH_HTML."/users/${bleat_me_reply{'username'}}/profile.jpg";
-						} else {
-							$temp_data_reply{REPLY_PICTURE} = $PATH_ROOT_HTML."/images/icon_default_256.png";
-						}
-						$temp_data_reply{REPLY_TIME} 		= "$mday/$mon/$year";
-						$temp_data_reply{REPLY_LOCATION} 	= "lat:".$bleat_me_reply{'latitude'}."<br>long:".$bleat_me_reply{'longitude'} if ($bleat_me_reply{'latitude'} and $bleat_me_reply{'longitude'});
-						push(@bleat_data_reply, \%temp_data_reply);
-					}
+			
+			# debug(Dumper($store{'bleats'}{$bleat_id}));
+			foreach $reply (@{$store{'bleats'}{$bleat_id}{'replies'}}) {
+				# debug("Setting reply for $bleat_id - $reply");
+				my %temp_data_reply;
+				my %bleat_me_reply = %{parameters_get_bleatdata($reply)};
+				# Fix up time formatting
+				($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($bleat_me_reply{'time'});
+				$year = $year + 1900;
+				$mon += 1;
+				$temp_data_reply{REPLY_TEXT} 		= $bleat_me_reply{'bleat'};
+				$temp_data_reply{REPLY_USERNAME} 	= $bleat_me_reply{'username'};
+				if (-e $DATASET_PATH_CGI."/users/${bleat_me_reply{'username'}}/profile.jpg") {
+					$temp_data_reply{REPLY_PICTURE} = $DATASET_PATH_HTML."/users/${bleat_me_reply{'username'}}/profile.jpg";
+				} else {
+					$temp_data_reply{REPLY_PICTURE} = $PATH_ROOT_HTML."/images/icon_default_256.png";
 				}
+				$temp_data_reply{REPLY_TIME} 		= "$mday/$mon/$year";
+				$temp_data_reply{REPLY_LOCATION} 	= "lat:".$bleat_me_reply{'latitude'}."<br>long:".$bleat_me_reply{'longitude'} if ($bleat_me_reply{'latitude'} and $bleat_me_reply{'longitude'});
+				push(@bleat_data_reply, \%temp_data_reply);
 			}
+
 			$temp_data{LOOP_REPLIES} = \@bleat_data_reply;
 		}
 		push(@bleat_data, \%temp_data);
@@ -814,10 +831,16 @@ sub parameters_set_base {
 	} else {
 		$template->param(PROFILE_PICTURE 	=> $PATH_ROOT_HTML."/images/icon_default_256.png");
 	}
-	$template->param(PROFILE_NAME 		=> parameters_get_name($_given_user));
-	$template->param(PROFILE_BLEATS 	=> parameters_count_bleats($_given_user));
-	$template->param(PROFILE_LISTENERS 	=> parameters_count_listeners($_given_user));
-	$template->param(PROFILE_LISTENING 	=> parameters_count_listening($_given_user));
+	$template->param(PROFILE_NAME 			=> parameters_get_name($_given_user));
+	$template->param(PROFILE_EMAIL 			=> $store{'users'}{$_given_user}{'email'});
+	$template->param(PROFILE_DESCRIPTION 	=> $store{'users'}{$_given_user}{'description'});
+	$template->param(PROFILE_HOME_LOC		=> $store{'users'}{$_given_user}{'home_suburb'});
+	$template->param(PROFILE_HOME_LAT		=> $store{'users'}{$_given_user}{'home_latitude'});
+	$template->param(PROFILE_HOME_LONG		=> $store{'users'}{$_given_user}{'home_longitude'});
+	$template->param(PROFILE_BLEATS 		=> parameters_count_bleats($_given_user));
+	$template->param(PROFILE_LISTENERS 		=> parameters_count_listeners($_given_user));
+	$template->param(PROFILE_LISTENING 		=> parameters_count_listening($_given_user));
+	$template->param(PROFILE_BACKGROUND 	=> $DATASET_PATH_HTML."/users/${_given_user}/background.jpg");
 }
 
 #
@@ -941,6 +964,22 @@ sub handle_action_signup {
 		$store{'new_user'}{'password'} 		= $param_password;
 		$store{'new_user'}{'key'} 			= $key_confirm;
 		$store_updated = TRUE;
+		# Send the email
+		debug("Attempting to email $param_email");
+		open MUTT, "|mutt -s Bitter -e 'set copy=no' -- 'khanh.phonic.nguyen@gmail.com'" or die "Cannot email";
+			print MUTT "Your user confirmation key is ".$key_confirm;
+		close MUTT or die "not right: $?\n";
+		# my $smtp = Net::SMTP->new('$mailserver_url') or die $!;
+		# $smtp->mail( $from );
+		# $smtp->to( $to );
+		# $smtp->data();
+		# $smtp->datasend("To: $to\n");
+		# $smtp->datasend("From: $from\n");
+		# $smtp->datasend("Subject: $subject\n");
+		# $smtp->datasend("\n"); # done with header
+		# $smtp->datasend($message);
+		# $smtp->dataend();
+		# $smtp->quit(); # all done. message sent.
 	} else {
 		debug("Signup tried and failed - all fields were not filled in properly");
 	}
@@ -971,14 +1010,6 @@ sub handle_action_confirm {
 		$param_username = $store{'users'}{$new_username}{'username'};
 		$param_password = $store{'users'}{$new_username}{'password'};
 
-		# ----- Not needed if using purely storeables -----
-		# $pathname = "$DATASET_PATH_CGI/users/_DEBUG";
-		# $filename = "$pathname/_debug.txt";
-		# mkdir $pathname;
-		# open($user_file, ">$filename") or die "Could not open file '$filename' $!\n";
-		# 	print $user_file "Stuff in here pls";
-		# close($user_file);
-
 		handle_yes();
 	} else {
 		# Redirect back to signup page and make them do it again cause suck one
@@ -991,6 +1022,106 @@ sub handle_action_confirm {
 
 	# Delete new user entry in store no matter what
 	$store{'new_user'} = undef;
+}
+
+sub handle_action_save {
+	return if (!$param_action);
+	return if ($param_action ne "save");
+	debug("Saving new users settings");
+	# TODO
+	if ($param_new_username) { debug("new_username implementation has not been done"); }
+	$store{'users'}{$param_username}{'full_name'} = $param_name if ($param_name);
+	$store{'users'}{$param_username}{'email'} = $param_email if ($param_email);
+
+	$store{'users'}{$param_username}{'description'} = $param_description if ($param_description);
+
+	$store{'users'}{$param_username}{'home_suburb'} = $param_home_loc if ($param_home_loc);
+	$store{'users'}{$param_username}{'home_latitude'} = $param_home_lat if ($param_home_lat);
+	$store{'users'}{$param_username}{'home_longitude'} = $param_home_long if ($param_home_long);
+}
+
+sub handle_action_reset {
+	return if (!$param_action);
+	return if ($param_action ne "reset");
+	debug("Clearing the form without saving anything");
+	# Don't think we actually need to do anything here
+}
+
+sub handle_action_upload {
+	return if (!$param_action);
+	return if ($param_action ne "upload");
+
+	# Upload profile picture
+	if ($param_file_photo) {
+		# Create the path to the image if it does not exists
+		$pathname = "$DATASET_PATH_CGI/users/$param_username";
+		if (!-d $pathname) {
+			mkdir $pathname;
+		}
+
+		# If a file already exists, delete it
+		if (-e "$pathname/profile.jpg") {
+			unlink "$pathname/profile.jpg";
+		}
+
+		debug("Attempting to open $param_file_photo");
+		open $UPLOADFILE, ">>$pathname/profile.jpg" or die "Could not open path for photo";
+			# die "The file handle is empty" if (!defined $upload_photo);
+			# binmode UPLOADFILE;
+			while ( $line = <$param_file_photo> ) {
+				print $UPLOADFILE $line;
+			}
+		close $UPLOADFILE;
+		debug('Uploaded new photo for the user');
+	}
+
+	# Upload background picture
+	if ($param_file_ground) {
+		# Create the path to the image if it does not exists
+		$pathname = "$DATASET_PATH_CGI/users/$param_username";
+		mkdir $pathname;
+		if (!-d $pathname) {
+			mkdir $pathname;
+		}
+
+		# If a file already exists, delete it
+		if (-e "$pathname/background.jpg") {
+			unlink "$pathname/background.jpg";
+		}
+
+		debug("Attempting to open $param_file_ground");
+		open $UPLOADFILE, ">>$pathname/background.jpg" or die "Could not open path for photo";
+			# die "The file handle is empty" if (!defined $upload_photo);
+			# binmode UPLOADFILE;
+			while ( $line = <$param_file_ground> ) {
+				print $UPLOADFILE $line;
+			}
+		close $UPLOADFILE;
+		debug('Uploaded new background for the user');
+	}
+}
+
+sub handle_action_delete {
+	return if (!$param_action);
+	# return if ($param_action ne "deletephoto");
+	# return if ($param_action ne "deletebackground");
+
+	$pathname = "$DATASET_PATH_CGI/users/$param_username";
+	if (!-d $pathname) {
+		debug("Cant delete something that is not even there");
+		return;
+	}
+
+	if ($param_action eq "deletephoto") {
+		if (-e "$pathname/profile.jpg") {
+			unlink "$pathname/profile.jpg";
+		}
+	} elsif ($param_action eq "deletebackground") {
+		if (-e "$pathname/background.jpg") {
+			unlink "$pathname/background.jpg";
+		}
+	}
+	debug("Deletes success");
 }
 
 #
@@ -1026,7 +1157,10 @@ sub handle_page_search {
 }
 
 sub handle_page_settings {
-
+	return if (!$param_page);
+	return if ($param_page ne "settings");
+	$template->param(PAGE_SETTINGS => TRUE);
+	$template->param(PAGE_HOME => FALSE);
 }
 
 #
@@ -1060,9 +1194,13 @@ sub handle_yes {
 	handle_action_bleat();
 	handle_action_logout();
 	handle_action_search();
+	handle_action_save();
+	handle_action_reset();
+	handle_action_upload();
+	handle_action_delete();
 
+	parameters_set_base($param_username);
 	if (!$param_page or ($param_page eq "home")) {
-		parameters_set_base($param_username);
 		parameters_set_bleatfeed();
 	}
 
@@ -1123,6 +1261,11 @@ elsif	( !logged_in() ) 			{ handle_no() ; }
 else								{ handle_err(); }
 
 print cookie_output() if cookie_output();
+# Need to hard reload to show chnages to profile and background pictures
+if ($param_file_ground or $param_file_photo) {
+	print "Expires: 0\n";                # Expire immediately
+	print "Pragma: no-cache\n";          # Work as NPH
+}
 print "Content-Type: text/html\n\n";
 print $template->output;
 

@@ -18,3 +18,8 @@ $('.bleat_button_expand').click(function(){
 		mainCard.removeClass('bleat_selected');
 	}
 });
+
+$('.upload').change(function () {
+	var self = $(this);
+    self.closest('.placemarker').find('.upload_file').val(self.val());
+});

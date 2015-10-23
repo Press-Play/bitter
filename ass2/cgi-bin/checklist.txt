@@ -20,10 +20,10 @@ LEVEL 3
 ✓	Bleat responses (Level 3)
 ✓	User Account Creation (Level 3)
 		TODO: EMAIL THE CONFIRMATION KEY
-	Profile Text (Level 3)
+✓	Profile Text (Level 3)
 	Password Recovery (Level 3)
-	Uploading & Deleting Images (Level 3)
-	Editing Infortmation (Level 3)
+✓	Uploading & Deleting Images (Level 3)
+✓	Editing Infortmation (Level 3)
 	Deleting Bleats (Level 3)
 	Suspending/Deleting Bitter Account (Level 3)
 	Notifications (Level 3)
