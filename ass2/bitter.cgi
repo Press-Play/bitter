@@ -65,8 +65,8 @@ use constant {
 };
 
 # Variable configurations set inside the cgi script
-$CONFIG_DEBUG 		= TRUE;
-$PATH_ROOT_HTML		= "../";
+$CONFIG_DEBUG 		= FALSE;
+$PATH_ROOT_HTML		= "";
 $DATASET_SIZE 		= "huge";
 $DATASET_PATH_CGI 	= "/web/cs2041/assignments/bitter/dataset-${DATASET_SIZE}";#"dataset-${DATASET_SIZE}";
 $DATASET_PATH_HTML	= "/web/cs2041/assignments/bitter/dataset-${DATASET_SIZE}";#"../dataset-${DATASET_SIZE}";
@@ -624,7 +624,7 @@ sub parameters_set_feeds {
 		if (-e $DATASET_PATH_CGI."/users/${bleat_me{'username'}}/profile.jpg") {
 			$temp_data{PROFILE_PICTURE} = $DATASET_PATH_HTML."/users/${bleat_me{'username'}}/profile.jpg";
 		} else {
-			$temp_data{PROFILE_PICTURE} = $PATH_ROOT_HTML."/images/icon_default_256.png";
+			$temp_data{PROFILE_PICTURE} = $PATH_ROOT_HTML."images/icon_default_256.png";
 		}
 
 		# Need to do these again since we're in a template variable loop
@@ -650,7 +650,7 @@ sub parameters_set_feeds {
 				if (-e $DATASET_PATH_CGI."/users/${bleat_me_reply{'username'}}/profile.jpg") {
 					$temp_data_reply{REPLY_PICTURE} = $DATASET_PATH_HTML."/users/${bleat_me_reply{'username'}}/profile.jpg";
 				} else {
-					$temp_data_reply{REPLY_PICTURE} = $PATH_ROOT_HTML."/images/icon_default_256.png";
+					$temp_data_reply{REPLY_PICTURE} = $PATH_ROOT_HTML."images/icon_default_256.png";
 				}
 				$temp_data_reply{REPLY_TIME} 		= "$mday/$mon/$year";
 				$temp_data_reply{REPLY_LOCATION} 	= "lat:".$bleat_me_reply{'latitude'}."<br>long:".$bleat_me_reply{'longitude'} if ($bleat_me_reply{'latitude'} and $bleat_me_reply{'longitude'});
@@ -813,7 +813,7 @@ sub parameters_set_searchfeed {
 		if (-e $DATASET_PATH_CGI."/users/$_elem/profile.jpg") {
 			$temp_data{PICTURE} = $DATASET_PATH_HTML."/users/$_elem/profile.jpg";
 		} else {
-			$temp_data{PICTURE} = $PATH_ROOT_HTML."/images/icon_default_256.png";
+			$temp_data{PICTURE} = $PATH_ROOT_HTML."images/icon_default_256.png";
 		}
 		$temp_data{LISTENERS} 	= parameters_count_listeners($_elem);
 		$temp_data{LISTENING} 	= parameters_count_listening($_elem);
@@ -829,7 +829,7 @@ sub parameters_set_base {
 	if (-e $DATASET_PATH_CGI."/users/${_given_user}/profile.jpg") {
 		$template->param(PROFILE_PICTURE 	=> $DATASET_PATH_HTML."/users/${_given_user}/profile.jpg");
 	} else {
-		$template->param(PROFILE_PICTURE 	=> $PATH_ROOT_HTML."/images/icon_default_256.png");
+		$template->param(PROFILE_PICTURE 	=> $PATH_ROOT_HTML."images/icon_default_256.png");
 	}
 	$template->param(PROFILE_NAME 			=> parameters_get_name($_given_user));
 	$template->param(PROFILE_EMAIL 			=> $store{'users'}{$_given_user}{'email'});
@@ -966,7 +966,7 @@ sub handle_action_signup {
 		$store_updated = TRUE;
 		# Send the email
 		debug("Attempting to email $param_email");
-		open MUTT, "|mutt -s Bitter -e 'set copy=no' -- 'khanh.phonic.nguyen@gmail.com'" or die "Cannot email";
+		open MUTT, "|mutt -s Bitter -e 'set copy=no' -- '$param_email'" or die "Cannot email";
 			print MUTT "Your user confirmation key is ".$key_confirm;
 		close MUTT or die "not right: $?\n";
 		# my $smtp = Net::SMTP->new('$mailserver_url') or die $!;
@@ -1032,6 +1032,7 @@ sub handle_action_save {
 	if ($param_new_username) { debug("new_username implementation has not been done"); }
 	$store{'users'}{$param_username}{'full_name'} = $param_name if ($param_name);
 	$store{'users'}{$param_username}{'email'} = $param_email if ($param_email);
+	$store{'users'}{$param_username}{'password'} = $param_password if ($param_password);
 
 	$store{'users'}{$param_username}{'description'} = $param_description if ($param_description);
 
