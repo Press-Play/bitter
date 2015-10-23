@@ -1,6 +1,7 @@
 .card {
 	position: relative;
 	width: calc(100% - 30px);
+	/*height: auto;*/
 	padding: 15px;
 	height: auto;
 	box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
@@ -8,7 +9,21 @@
 	background-color: #fff;
 	pointer-events: none;
 	font-size: 14px;
+	/*opacity: 1;*/
+	/*visibility: visible;*/
+	z-index: 2;
 }
+	.minimise {
+		height: 0;
+		opacity: 0;
+		visibility: hidden;
+		padding: 0;
+	}
+	.card_reply {
+	    width: calc(95% - 30px);
+    	margin-left: 5%;
+    	z-index: 0;
+	}
 
 .card2 {
 	position: relative;
@@ -22,7 +37,7 @@
 }
 .card2.menu:hover, .card2.listens:hover{
 	box-shadow: 0 0 8px rgba(0,0,0,.19), 0 3px 3px rgba(0,0,0,.23);
-	z-index: 1;
+	z-index: 2;
 }
 
 	.menu, .listens {

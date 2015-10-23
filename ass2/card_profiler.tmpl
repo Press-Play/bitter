@@ -1,6 +1,6 @@
 <div class="card">
 	<TMPL_IF PROFILE_PROFILE>
-		<div class="card2 stats menu profile_unlisten disabled">Listening</div>
+		<div class="card2 stats menu profile_unlisten" style="pointer-events: none !important">Listening</div>
 	<TMPL_ELSE>
 		<TMPL_IF LISTENS_TO>
 			<a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>&action=unlisten">
@@ -22,3 +22,4 @@
 		</a>
 	</TMPL_LOOP>
 </div>
+<div class="break"></div>

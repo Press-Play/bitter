@@ -1,0 +1,19 @@
+<div class="container_login">
+	<div class="card">
+		<div class="login_padding"></div>
+		<div class="login_logo">
+			<img src="/images/logo_bitter_512.png">
+		</div>
+		<div class="login_padding"></div>
+		<div class="login_welcome">An email has been sent to</div>
+		<div class="login_welcome" style="font-weight: 800"><TMPL_VAR NAME=EMAIL></div>
+		<div class="login_welcome">for confrimation! Copy and paste the confirmation key below.</div>
+		<form action="bitter.cgi" method="post">
+			<input type="text" 		class="login_input" 	name="key" placeholder="confirmation key" autocomplete="off">
+			<input type="submit" 	class="login_submit"	name="submit"	value="Confirm" hidefocus="true"/>
+			<input type="hidden" 							name="page"		value="confirm">
+			<input type="hidden" 							name="action"	value="confirm">
+		</form>
+		<div class="login_padding"></div>
+	</div>
+</div>

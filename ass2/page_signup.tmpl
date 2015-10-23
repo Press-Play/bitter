@@ -1,0 +1,21 @@
+<div class="container_login">
+	<div class="card">
+		<div class="login_padding"></div>
+		<div class="login_logo">
+			<img src="/images/logo_bitter_512.png">
+		</div>
+		<div class="login_welcome">Welcome to Bitter!</div>
+		<div class="login_message"><TMPL_VAR NAME=MESSAGE></div>
+		<form action="bitter.cgi" method="post">
+			<input type="text" 		class="login_input" 	name="name" placeholder="full name">
+			<input type="text" 		class="login_input" 	name="email" 	placeholder="email">
+			<input type="text" 		class="login_input" 	name="username" placeholder="username">
+			<input type="password" 	class="login_input" 	name="password" placeholder="password">
+			<input type="submit" 	class="login_submit"	name="submit"	value="Signup" hidefocus="true"/>
+			<input type="hidden"							name="action"	value="signup">
+			<input type="hidden"							name="page"		value="signup">
+		</form>
+		<a class="login_signup" href="bitter.cgi?page=login"><p>Login</p></a>
+		<div class="login_padding"></div>
+	</div>
+</div>

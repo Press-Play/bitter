@@ -6,28 +6,28 @@ LEVEL 0
 
 LEVEL 1
 ✓	Logging In & Out (Level 1)
-	Search for Users By Username or Full Name (Level 1)
-	Sending Bleats (Level 1)
+✓	Search for Users By Username or Full Name (Level 1)
+✓	Sending Bleats (Level 1)
 
 LEVEL 2
-	Displaying Relevant Bleats (Level 2)
-	Listening/Unlistening to Users (Level 2)
-	Searching Bleats (Level 2)
-	Replying to Bleat(Level 2)
+✓	Displaying Relevant Bleats (Level 2)
+✓	Listening/Unlistening to Users (Level 2)
+✓	Searching Bleats (Level 2)
+✓	Replying to Bleat (Level 2)
 
 LEVEL 3
-	Pagination of Bleats & Search Results (Level 3)
-	Bleat responses (Level 3)
-	User Account Creation (Level 3)
-	Profile Text (Level 3)
+✓	Pagination of Bleats & Search Results (Level 3)
+✓	Bleat responses (Level 3)
+✓	User Account Creation (Level 3)
+		TODO: EMAIL THE CONFIRMATION KEY
+✓	Profile Text (Level 3)
 	Password Recovery (Level 3)
-	Uploading & Deleting Images (Level 3)
-	Editing Infortmation (Level 3)
+✓	Uploading & Deleting Images (Level 3)
+✓	Editing Infortmation (Level 3)
 	Deleting Bleats (Level 3)
 	Suspending/Deleting Bitter Account (Level 3)
 	Notifications (Level 3)
-	Notifications (Level 3)
-	Bleets Attachment (Level 3)
+	Bleats Attachment (Level 3)
 
 LEVEL 4
 	Advanced Features (Level 4)

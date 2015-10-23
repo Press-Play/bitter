@@ -1,0 +1,27 @@
+<div class="back_next">
+	<div class="arrow_back">
+		<form action="bitter.cgi" method="post" class="arrow_back_image">
+			<input type="image" src="../images/icon_triangle_64.png">
+			<input type="hidden" name="dir" 	value="back">
+			<input type="hidden" name="action" 	value="<TMPL_VAR NAME=PARAM_ACTION>">
+			<input type="hidden" name="p" 		value="<TMPL_VAR NAME=PAGINATION_SET>">
+			<input type="hidden" name="page" 	value="<TMPL_VAR NAME=PARAM_PAGE>">
+			<input type="hidden" name="profile" value="<TMPL_VAR NAME=PARAM_PROFILE>">
+			<input type="hidden" name="query" 	value="<TMPL_VAR NAME=PARAM_QUERY>">
+			<input type="hidden" name="search" 	value="<TMPL_VAR NAME=SEARCH_CONSTRAINT>">
+		</form>
+	</div>
+	<div class="page_number"><TMPL_VAR NAME=PAGINATION_SET></div>
+	<div class="arrow_next">
+		<form action="bitter.cgi" method="post" class="arrow_next_image">
+			<input type="image" src="../images/icon_triangle_64.png">
+			<input type="hidden" name="dir" 	value="next">
+			<input type="hidden" name="action" 	value="<TMPL_VAR NAME=PARAM_ACTION>">
+			<input type="hidden" name="p" 		value="<TMPL_VAR NAME=PAGINATION_SET>">
+			<input type="hidden" name="page" 	value="<TMPL_VAR NAME=PARAM_PAGE>">
+			<input type="hidden" name="profile" value="<TMPL_VAR NAME=PARAM_PROFILE>">
+			<input type="hidden" name="query" 	value="<TMPL_VAR NAME=PARAM_QUERY>">
+			<input type="hidden" name="search" 	value="<TMPL_VAR NAME=SEARCH_CONSTRAINT>">
+		</form>
+	</div>
+</div>

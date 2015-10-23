@@ -1,0 +1,10 @@
+<div class="card">
+	<form action="bitter.cgi" method="post" style="display: flex">
+		<input type="text" 		class="bleat_input" 	name="query" 	placeholder="What are you looking for...?" autocomplete="off" maxlength="142">
+		<input type="submit" 	class="bleat_submit"	name="submit"	value="Search" hidefocus="true"/>
+		<input type="hidden"							name="search"	value="<TMPL_VAR NAME=SEARCH_CONSTRAINT>">
+		<input type="hidden"							name="page"		value="search">
+		<input type="hidden"							name="action"	value="search">
+	</form>
+</div>
+<div class="break"></div>

@@ -1,0 +1,65 @@
+.per_page_label {
+	width: 100%;
+	text-align: center;
+}
+
+.container_pager {
+	display: flex;
+	display: -webkit-flex;
+}
+
+	.pager {
+		width: 25%;
+		text-align: center;
+		margin-top: 15px;
+		margin-bottom: 20px;
+		/*border: 1px solid #979797;*/
+		pointer-events: all !important;
+		font-size: 16px;
+	}
+	.pager:hover {
+		font-weight: 800;
+	}
+	.pager.selected {
+		font-weight: 800;
+	}
+
+.back_next {
+	margin-bottom: 15px;
+	display: flex;
+	display: -webkit-flex;
+	justify-content: center;
+}
+
+.page_number {
+	font-size: 20px;
+	padding-top: 5px;
+}
+
+.arrow_back {
+	padding: 5px;
+	pointer-events: all !important;
+}
+	.arrow_back_image input {
+		max-width: 24px;
+		max-height: 24px;
+		opacity: .4;
+		-moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
+        cursor: pointer;
+	}
+
+.arrow_next {
+	padding: 5px;
+	pointer-events: all !important;
+}
+	.arrow_next_image input {
+		max-width: 24px;
+		max-height: 24px;
+		opacity: .4;
+		cursor: pointer;
+	}
