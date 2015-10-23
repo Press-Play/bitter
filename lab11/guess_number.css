@@ -1,0 +1,38 @@
+.textfield {
+	width: 40%;
+	height: 30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 30%; 
+	margin-left: 30%;
+	padding-left: 5px;
+	pointer-events: all;
+	border-radius: 6px;
+	background-color: none;
+	background  : none;
+	border: 2px solid #979797;
+	outline: none;
+	font-family: 'Oxygen';
+	font-size: 14px;
+	color: #4A4A4A;
+}
+
+.button {
+	width: 40%;
+	height: 30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 30%; 
+	margin-left: 30%;
+	padding-left: 5px;
+	pointer-events: all;
+	border-radius: 6px;
+	background-color: #228B22;
+	border: 2px solid #228B22;;
+	outline: none;
+	cursor: pointer;
+	font-family: 'Oxygen';
+	font-weight: 500;
+	font-size: 16px;
+	color: #fff;
+}
