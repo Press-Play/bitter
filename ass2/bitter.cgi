@@ -485,6 +485,7 @@ sub parameters_put_new_bleat {
 # Listen to a new person (by username)
 sub parameters_put_new_listen {
 	$store{'users'}{$param_username}{'listens'} .= " ".$_[0];
+	$store{'users'}{$_[0]}{'listening'}++;
 	$store_updated = TRUE;
 }
 
@@ -498,6 +499,7 @@ sub parameters_del_listen {
 	}
 	$_listens_new =~ s/\s+$//;
 	$store{'users'}{$param_username}{'listens'} = $_listens_new;
+	$store{'users'}{$_[0]}{'listening'}--;
 	$store_updated = TRUE;
 }
 
@@ -539,6 +541,7 @@ sub parameters_count_bleats {
 sub parameters_count_listeners {
 	$_given_user = $_[0];
 	if (!exists $store{'users'}{$_given_user}{'listening'}) {
+	    # TODO: Count instead of returning 0
 		return 0;
 	} else {
 		return $store{'users'}{$_given_user}{'listening'};
@@ -616,10 +619,10 @@ sub parameters_set_feeds {
 		$mon += 1;
 
 		# debug(Dumper(\%bleat_me));
-		$temp_data{BLEAT_ID} 			= $bleat_id;
+		$temp_data{BLEAT_ID} 			= $bleat_id unless ($param_action eq "search");
 		$temp_data{BLEAT_TEXT} 			= $bleat_me{'bleat'};
 		$temp_data{BLEAT_TIME} 			= "$mday/$mon/$year";
-		$temp_data{BLEAT_LOCATION} 		= "lat:".$bleat_me{'latitude'}."<br>long:".$bleat_me{'longitude'} if ($bleat_me{'latitude'} and $bleat_me{'longitude'});
+		$temp_data{BLEAT_LOCATION} 		= "latlng=$bleat_me{'latitude'},$bleat_me{'longitude'}" if ($bleat_me{'latitude'} and $bleat_me{'longitude'});
 		$temp_data{PROFILE_USERNAME} 	= $bleat_me{'username'};
 		if (-e $DATASET_PATH_CGI."/users/${bleat_me{'username'}}/profile.jpg") {
 			$temp_data{PROFILE_PICTURE} = $DATASET_PATH_HTML."/users/${bleat_me{'username'}}/profile.jpg";
@@ -628,8 +631,8 @@ sub parameters_set_feeds {
 		}
 
 		# Need to do these again since we're in a template variable loop
-		$temp_data{PARAM_PAGE} 		=  $param_page;
-		$temp_data{PARAM_PROFILE} 	=  $param_profile;
+		$temp_data{PARAM_PAGE} 		=  $param_page      unless ($param_action eq "search");
+		$temp_data{PARAM_PROFILE} 	=  $param_profile   unless ($param_action eq "search");
 
 		# -------------------- Set replied bleats --------------------
 		# Go through every bleat and push it if it is a reply
@@ -653,7 +656,7 @@ sub parameters_set_feeds {
 					$temp_data_reply{REPLY_PICTURE} = $PATH_ROOT_HTML."images/icon_default_256.png";
 				}
 				$temp_data_reply{REPLY_TIME} 		= "$mday/$mon/$year";
-				$temp_data_reply{REPLY_LOCATION} 	= "lat:".$bleat_me_reply{'latitude'}."<br>long:".$bleat_me_reply{'longitude'} if ($bleat_me_reply{'latitude'} and $bleat_me_reply{'longitude'});
+				$temp_data_reply{REPLY_LOCATION} 	= "latlng=$bleat_me_reply{'latitude'},$bleat_me_reply{'longitude'}" if ($bleat_me_reply{'latitude'} and $bleat_me_reply{'longitude'});
 				push(@bleat_data_reply, \%temp_data_reply);
 			}
 
@@ -1142,7 +1145,7 @@ sub handle_action_recover {
 	        next if (!$store{'users'}{$user}{'email'});
 	        if ($store{'users'}{$user}{'email'} eq $param_email) {
 	            $associated_user = $user;
-	            break;
+	            last;
 	        }
 	    }
 	    if (!$associated_user) {

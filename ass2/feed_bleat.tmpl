@@ -6,9 +6,11 @@
 				<div class="bleat_display_text"><div class="text"><TMPL_VAR NAME=BLEAT_TEXT></div></div>
 				<div class="bleat_display_profile">
 					<div class="info_container">
-						<div class="card2 info"><TMPL_VAR NAME=PROFILE_USERNAME></div>
+					    <a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>" style="pointer-events: all !important">
+						    <div class="card2 info"><TMPL_VAR NAME=PROFILE_USERNAME></div>
+						</a>
 						<div class="card2 info"><TMPL_VAR NAME=BLEAT_TIME></div>
-						<div class="card2 info"><TMPL_VAR NAME=BLEAT_LOCATION></div>
+						<div class="card2 info loc"><TMPL_VAR NAME=BLEAT_LOCATION></div>
 					</div>
 					<a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>" style="pointer-events: all !important">
 						<div class="card2 picture_container"><img src="<TMPL_VAR NAME=PROFILE_PICTURE>"></div>
@@ -26,11 +28,15 @@
 					<div class="bleat_display_text"><div class="text"><TMPL_VAR NAME=REPLY_TEXT></div></div>
 					<div class="bleat_display_profile">
 						<div class="info_container">
-							<div class="card2 info"><TMPL_VAR NAME=REPLY_USERNAME></div>
+						    <a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=REPLY_USERNAME>" style="pointer-events: all !important">
+							    <div class="card2 info"><TMPL_VAR NAME=REPLY_USERNAME></div>
+							</a>
 							<div class="card2 info"><TMPL_VAR NAME=REPLY_TIME></div>
-							<div class="card2 info"><TMPL_VAR NAME=REPLY_LOCATION></div>
+							<div class="card2 info loc"><TMPL_VAR NAME=REPLY_LOCATION></div>
 						</div>
-						<div class="card2 picture_container"><img src="<TMPL_VAR NAME=REPLY_PICTURE>"></div>
+						<a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=REPLY_USERNAME>" style="pointer-events: all !important">
+						    <div class="card2 picture_container"><img src="<TMPL_VAR NAME=REPLY_PICTURE>"></div>
+						</a>
 					</div>
 				</div>
 			</div>

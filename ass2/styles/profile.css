@@ -85,3 +85,13 @@
 	padding-right: 50px;
 	font-style: italic;
 }
+
+.profile_suburb {
+	text-align: center;
+	padding-left: 50px;
+	padding-right: 50px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	/*font-weight: 800;*/
+	color: #228B22;
+}
