@@ -29,6 +29,17 @@
 	</div>
 	<div class="break"></div>
 	<div class="card">
+		<p class="settings_title">Account</p>
+		<div class="settings_message"><TMPL_VAR NAME=MESSAGE></div>
+		<p>Suspend account - type password to suspend</p>
+		<input type="password" 	class="settings_input" name="suspend" placeholder="xxxxxxxx" autocomplete="off">
+		<p>Delete account - type password to delete (This can not be undone)</p>
+		<input type="password" 	class="settings_input" name="delete" placeholder="xxxxxxxx" autocomplete="off">
+		<p>Email Notifications</p>
+		<input type="checkbox" name="notification" <TMPL_IF PROFILE_NOTIFICATIONS>checked</TMPL_IF> style="pointer-events: all !important">
+	</div>
+	<div class="break"></div>
+	<div class="card">
 	<!-- 	<a href="bitter.cgi?page=settings?action=save">
 			<div class="card2 stats menu profile_listen">Save</div>
 		</a> -->

@@ -94,6 +94,9 @@ $param_home_long	= param('home_longitude');
 $param_new_username = param('new_username');
 $param_file_photo	= param('file_photo');
 $param_file_ground	= param('file_background');
+$param_delete       = param('delete');
+$param_suspend      = param('suspend');
+$param_notification = param('notification');
 # GET - Sent in url
 $param_action		= param('action');
 $param_page			= param('page');
@@ -477,9 +480,32 @@ sub parameters_put_new_bleat {
 	$store{'bleats'}{$_id}{'username'} 		= $param_username;
 	$store{'bleats'}{$_id}{'time'} 			= "$the_time";
 	$store{'bleats'}{$_id}{'in_reply_to'} 	= $param_reply_to if ($param_reply_to);
+	push(@{$store{'bleats'}{$param_reply_to}{'replies'}}, $_id) if ($param_reply_to);
 	# debug(Dumper($store{'bleats'}{$_id}));
 	# debug(Dumper($store{'bleats'}{$param_reply_to}));
 	$store_updated = TRUE;
+	
+	# Send the email as a notification if they have it turnt on
+	# Need to check if a user is mentioned and also the person being replied to
+	@_bleat_words = split " ", $_[0];
+	foreach $_mention (@_bleat_words) {
+	    next if (!$_mention =~ m/^\@/);
+	    $_mention =~ s/^\@//;
+	    next if (!$store{'users'}{$_mention}{'notifications'});
+	    $_email = $store{'users'}{$_mention}{'email'};
+        open MUTT, "|mutt -s Bitter -e 'set copy=no' -- '$_email'" or die "Cannot email";
+	        print MUTT "Someone mentioned you in bleat!";
+        close MUTT or die "not right: $?\n";
+	}
+	if ($param_reply_to) {
+	    $_user = $store{'bleats'}{$param_reply_to}{'username'};
+	    return if (!$store{'users'}{$_user}{'notifications'});
+	    $_email = $store{'users'}{$_user}{'email'};
+        open MUTT, "|mutt -s Bitter -e 'set copy=no' -- '$_email'" or die "Cannot email";
+	        print MUTT "Someone replied to your bleat!";
+        close MUTT or die "not right: $?\n";
+	}
+	
 }
 
 # Listen to a new person (by username)
@@ -487,6 +513,13 @@ sub parameters_put_new_listen {
 	$store{'users'}{$param_username}{'listens'} .= " ".$_[0];
 	$store{'users'}{$_[0]}{'listening'}++;
 	$store_updated = TRUE;
+	
+	# Send the email as a notification if they have it turnt on
+	return if (!$store{'users'}{$_[0]}{'notifications'});
+	$_email = $store{'users'}{$_[0]}{'email'};
+    open MUTT, "|mutt -s Bitter -e 'set copy=no' -- '$_email'" or die "Cannot email";
+	    print MUTT "You got a new listener!";
+    close MUTT or die "not right: $?\n";
 }
 
 # Unlisten someone (by username)
@@ -844,6 +877,7 @@ sub parameters_set_base {
 	$template->param(PROFILE_LISTENERS 		=> parameters_count_listeners($_given_user));
 	$template->param(PROFILE_LISTENING 		=> parameters_count_listening($_given_user));
 	$template->param(PROFILE_BACKGROUND 	=> $DATASET_PATH_HTML."/users/${_given_user}/background.jpg");
+	$template->param(PROFILE_NOTIFICATIONS 	=> $store{'users'}{$_given_user}{'notifications'}) if ($store{'users'}{$_given_user}{'notifications'});
 }
 
 #
@@ -1042,6 +1076,30 @@ sub handle_action_save {
 	$store{'users'}{$param_username}{'home_suburb'} = $param_home_loc if ($param_home_loc);
 	$store{'users'}{$param_username}{'home_latitude'} = $param_home_lat if ($param_home_lat);
 	$store{'users'}{$param_username}{'home_longitude'} = $param_home_long if ($param_home_long);
+	
+	# Handle account settings suspend/delete/notifications
+	if ($param_suspend) {
+	    if ($param_suspend eq $store{'users'}{$param_username}{'password'}) {
+	        handle_action_logout();
+	        handle_no();
+	    } else {
+	        $template->param(MESSAGE => "Incorrect password");
+	    }
+	}
+	if ($param_delete) {
+	    if ($param_suspend eq $store{'users'}{$param_username}{'password'}) {
+	        handle_action_logout();
+	        handle_no();
+	    } else {
+	        $template->param(MESSAGE => "Incorrect password");
+	    }
+	}
+	if ($param_notification) {
+	    #$template->param(MESSAGE => "param_notification: $param_notification");
+	    $store{'users'}{$param_username}{'notifications'} = TRUE;
+	} else {
+	     $store{'users'}{$param_username}{'notifications'} = FALSE;
+	}
 }
 
 sub handle_action_reset {

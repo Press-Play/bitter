@@ -1,6 +1,9 @@
 <div class="card">
 	<form action="bitter.cgi" method="post" style="display: flex">
-		<input type="text" 		class="bleat_input" 	name="bleat" 	placeholder="Bleat to your heart's content..." autocomplete="off" maxlength="142">
+		<input type="text" 		class="bleat_input bleat_input_bleater" 	name="bleat" 	placeholder="Bleat to your heart's content..." autocomplete="off" maxlength="142" id="bleater">
+		<div class="bleat_word_count">
+		    <div class="bleat_word_count_text">142</div>
+		</div>
 		<input type="submit" 	class="bleat_submit"	name="submit"	value="Publish" hidefocus="true"/>
 		<input type="hidden"							name="page"		value="home">
 		<input type="hidden"							name="action"	value="bleat">

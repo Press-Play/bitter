@@ -94,6 +94,12 @@
 	display: -webkit-flex;
 }
 
+.settings_message {
+    color: #F00;
+    font-size: 12px;
+    padding-bottom: 10px;
+    height: auto;
+}
 /*.upload_file {
 	width: 100%;
 	font-size: 16px;
