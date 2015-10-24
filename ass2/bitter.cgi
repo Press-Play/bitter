@@ -1125,6 +1125,55 @@ sub handle_action_delete {
 	debug("Deletes success");
 }
 
+sub handle_action_recover {
+    return if (!$param_action);
+	return if ($param_action ne "recover");
+	
+	# To recover an account, the password should get changed to something random
+	# Then the user can change it to something personal later
+	
+	# First look for the user with this email (return bs if not there)
+	if (!$param_email) {
+	    $template->param(MESSAGE => "No email given fool");
+	    return;
+	} else {
+	    $associated_user = undef;
+	    foreach $user (%{$store{'users'}}) {
+	        next if (!$store{'users'}{$user}{'email'});
+	        if ($store{'users'}{$user}{'email'} eq $param_email) {
+	            $associated_user = $user;
+	            break;
+	        }
+	    }
+	    if (!$associated_user) {
+	        $template->param(MESSAGE => "No user associated with this email.");
+	        return;
+	    }
+	    
+	}
+	# Reaching here means all fields correctly set
+	$template->param(PAGE_SUCCESS => TRUE);
+	$template->param(PAGE_LOGIN => FALSE);
+	$template->param(PAGE_SIGNUP => FALSE);
+	$template->param(PAGE_FORGOT => FALSE);
+	$template->param(EMAIL => $param_email);
+	# Generate a key and use as password
+	@chars = ("a".."z", "0".."9");
+	$key_password = "";
+	$key_password .= $chars[rand @chars] for 1..8;
+	debug("Generated password via keygen: $key_password");
+	# Change the user's password in the hash db
+	$store{'users'}{$associated_user}{'password'} = $key_password;
+	$store_updated = TRUE;
+	# Send the email
+	debug("Attempting to email $param_email");
+	open MUTT, "|mutt -s Bitter -e 'set copy=no' -- '$param_email'" or die "Cannot email";
+		print MUTT "Your new password for $associated_user is $key_password \n";
+		print MUTT "Please login using these credentials and change your password ASAP.";
+	close MUTT or die "not right: $?\n";
+	debug("Should be successful recovery");
+}
+
 #
 #	PAGE HANDLES
 #
@@ -1238,6 +1287,7 @@ sub handle_no {
 
 	handle_action_signup();
 	handle_action_confirm();
+	handle_action_recover();
 }
 
 # Run this for all error responses

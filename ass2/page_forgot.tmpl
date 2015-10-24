@@ -5,9 +5,12 @@
 			<img src="images/logo_bitter_512.png">
 		</div>
 		<div class="login_welcome">Welcome to Bitter!</div>
+		<div class="login_message"><TMPL_VAR NAME=MESSAGE></div>
 		<form action="bitter.cgi" method="post">
 			<input type="text" 		class="login_input" 	name="email" 	placeholder="email">
 			<input type="submit" 	class="login_submit"	name="submit"	value="Recover" hidefocus="true"/>
+			<input type="hidden" 	                     	name="page" 	value="forgot">
+			<input type="hidden" 	                     	name="action" 	value="recover">
 		</form>
 		<a class="login_signup" href="bitter.cgi?page=login"><p>Login</p></a>
 		<div class="login_padding"></div>

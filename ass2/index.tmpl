@@ -1,5 +1,5 @@
 <html>
-	<head>
+	<head profile="http://www.w3.org/2005/10/profile">
 		<title>Bitter</title>
 		<TMPL_INCLUDE NAME="includes.tmpl">
 	</head>
@@ -36,6 +36,10 @@
 
 				<TMPL_IF PAGE_CONFIRM>
 					<TMPL_INCLUDE NAME="page_confirm.tmpl">
+				</TMPL_IF>
+				
+				<TMPL_IF PAGE_SUCCESS>
+					<TMPL_INCLUDE NAME="page_success.tmpl">
 				</TMPL_IF>
 
 				<TMPL_IF PAGE_LOGIN>
