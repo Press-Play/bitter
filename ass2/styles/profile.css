@@ -84,6 +84,7 @@
 	padding-left: 50px;
 	padding-right: 50px;
 	font-style: italic;
+	pointer-events: all !important;
 }
 
 .profile_suburb {

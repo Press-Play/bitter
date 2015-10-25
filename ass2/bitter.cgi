@@ -67,9 +67,9 @@ use constant {
 # Variable configurations set inside the cgi script
 $CONFIG_DEBUG 		= FALSE;
 $PATH_ROOT_HTML		= "";
-$DATASET_SIZE 		= "huge";
-$DATASET_PATH_CGI 	= "/web/cs2041/assignments/bitter/dataset-${DATASET_SIZE}";#"dataset-${DATASET_SIZE}";
-$DATASET_PATH_HTML	= "/web/cs2041/assignments/bitter/dataset-${DATASET_SIZE}";#"../dataset-${DATASET_SIZE}";
+$DATASET_SIZE 		= "large";
+$DATASET_PATH_CGI 	= "dataset-${DATASET_SIZE}";#"dataset-${DATASET_SIZE}";
+$DATASET_PATH_HTML	= "dataset-${DATASET_SIZE}";#"../dataset-${DATASET_SIZE}";
 $DATASET_MODE		= DB_MIGRATE;
 
 # Global database storage
@@ -98,12 +98,13 @@ $param_delete       = param('delete');
 $param_suspend      = param('suspend');
 $param_notification = param('notification');
 # GET - Sent in url
-$param_action		= param('action');
+$param_action		= param('action');      if (!$param_action) { $param_action = 'none' };
 $param_page			= param('page');
 $param_profile		= param('profile');		# Username
-$param_pagination 	= param('n');			if (!$param_pagination) { $param_pagination = '10' };
+$param_pagination 	= param('n');			#if (!$param_pagination) { $param_pagination = '10' };
 $param_set 			= param('p');			if (!$param_set) 		{ $param_set 		= '0'; }; 	# Apparently, the whole concept of "or" doesnt work, idk
 $param_constraint	= param('search');		if (!$param_constraint) { $param_constraint = 'username'; };
+$param_bid          = param('bid');         # Id of bleat for bleat page
 # Any hidden ones
 $param_profile	= param('profile_username') if (!$param_profile);
 # File handles
@@ -350,8 +351,11 @@ sub storable_retrieve {
 	%store = %$store_hashref;
 
 	# Set persisted settings/params
-	# if not $store{'persists'}{'pagination'}
-	$param_pagination 	= $store{'persists'}{'pagination'} 	if (!$param_pagination);
+	if (!$store{'persists'}{'pagination'}) {
+	    $param_pagination 	= '10';
+	} else {
+	    $param_pagination 	= $store{'persists'}{'pagination'} 	if (!$param_pagination);
+	}
 	if ($param_pagination == 10)  { $template->param(PAGINATION_10  => TRUE); } else { $template->param(PAGINATION_10  => FALSE); }
 	if ($param_pagination == 25)  { $template->param(PAGINATION_25  => TRUE); } else { $template->param(PAGINATION_25  => FALSE); }
 	if ($param_pagination == 50)  { $template->param(PAGINATION_50  => TRUE); } else { $template->param(PAGINATION_50  => FALSE); }
@@ -378,6 +382,7 @@ sub logged_in_credentials {
 }
 
 sub logged_in {
+    return FALSE if ($param_page eq "signup");
 	return (logged_in_credentials() or logged_in_cookie());
 }
 
@@ -420,14 +425,14 @@ sub signup_exists_username {
 sub signup_valid_username {
 	$_result = TRUE;
 	if ((length $param_username < 4)
-	or 	!($param_username =~ m/[a-zA-Z0-9]+/g))
+	or 	($param_username !~ m/[a-zA-Z0-9]+/g))
 		{ $_result = FALSE; }
 	return $_result;
 }
 
 sub signup_valid_email {
 	$_result = TRUE;
-	if (!$param_email =~ m/[\@]/g)
+	if ($param_email !~ m/@/g)
 		{ $_result = FALSE; }
 	return $_result;
 }
@@ -435,7 +440,7 @@ sub signup_valid_email {
 sub signup_valid_password {
 	$_result = TRUE;
 	if ((length $param_password < 5)
-	or 	(!$param_password =~ m/[a-zA-Z0-9]+/g))
+	or 	($param_password !~ m/[a-zA-Z0-9]+/g))
 		{ $_result = FALSE; }
 	return $_result;
 }
@@ -608,7 +613,7 @@ sub parameters_set_pagination {
 		$param_set = 0;
 	}
 	$_begin = $param_set * $param_pagination;
-	$_end 	= ($param_set + 1) * $param_pagination;
+	$_end 	= (($param_set + 1) * $param_pagination) - 1;
 	if ($_begin >= $_arr_len) {
 		$_begin 	= 0;
 		$_end 		= $param_pagination;
@@ -681,6 +686,7 @@ sub parameters_set_feeds {
 				($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($bleat_me_reply{'time'});
 				$year = $year + 1900;
 				$mon += 1;
+				$temp_data_reply{REPLY_ID}   		= $reply;
 				$temp_data_reply{REPLY_TEXT} 		= $bleat_me_reply{'bleat'};
 				$temp_data_reply{REPLY_USERNAME} 	= $bleat_me_reply{'username'};
 				if (-e $DATASET_PATH_CGI."/users/${bleat_me_reply{'username'}}/profile.jpg") {
@@ -869,7 +875,10 @@ sub parameters_set_base {
 	}
 	$template->param(PROFILE_NAME 			=> parameters_get_name($_given_user));
 	$template->param(PROFILE_EMAIL 			=> $store{'users'}{$_given_user}{'email'});
-	$template->param(PROFILE_DESCRIPTION 	=> $store{'users'}{$_given_user}{'description'});
+	# Only need to sanitise if in the form
+	$sanitise_description = $store{'users'}{$_given_user}{'description'};
+	$sanitise_description =~ s/<.*?>//g if ($param_page eq "settings");
+	$template->param(PROFILE_DESCRIPTION 	=> $sanitise_description);
 	$template->param(PROFILE_HOME_LOC		=> $store{'users'}{$_given_user}{'home_suburb'});
 	$template->param(PROFILE_HOME_LAT		=> $store{'users'}{$_given_user}{'home_latitude'});
 	$template->param(PROFILE_HOME_LONG		=> $store{'users'}{$_given_user}{'home_longitude'});
@@ -910,6 +919,7 @@ sub cookie_logout_session {
 sub cookie_output {
 	$_result = "";
 	foreach $_bake_me (@cookie_send) {
+	    next if (!$_bake_me);
 		$_result .= "Set-Cookie: $_bake_me\n";
 	}
 	return $_result;
@@ -1274,6 +1284,20 @@ sub handle_page_settings {
 	$template->param(PAGE_HOME => FALSE);
 }
 
+sub handle_page_bleat {
+	return if (!$param_page);
+	return if ($param_page ne "bleat");
+	return if (!$param_bid);
+
+    @biddy = ();
+    push(@biddy, $param_bid);
+    parameters_set_feeds(\@biddy);
+    
+    # Render a bleat feed with just the one bleat
+	$template->param(PAGE_BLEAT => TRUE);
+	$template->param(PAGE_HOME => FALSE);
+}
+
 #
 #	PERSISTENCE/STOREABLE HANDLES
 #
@@ -1319,6 +1343,7 @@ sub handle_yes {
 	handle_page_profile();
 	handle_page_search();
 	handle_page_settings();
+	handle_page_bleat();
 
 	# Persistence
 	handle_persistence();
@@ -1379,7 +1404,7 @@ if ($param_file_ground or $param_file_photo) {
 	print "Pragma: no-cache\n";          # Work as NPH
 }
 print "Content-Type: text/html\n\n";
-print $template->output;
+print $template->output if (!$CONFIG_DEBUG);
 
 storable_update();
 

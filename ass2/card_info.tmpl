@@ -1,0 +1,17 @@
+<TMPL_LOOP NAME=LOOP_BLEATS>
+    <div class="card">
+        <div class="bleat_op">OP</div>
+        <div class="break"></div>
+        <a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>">
+		    <div class="card2 stats menu home_name"><TMPL_VAR NAME=PROFILE_USERNAME></div>
+	    </a>
+	    <div class="break"></div>
+	    <div class="home_picture">
+		     <img src="<TMPL_VAR NAME=PROFILE_PICTURE>">
+	    </div>
+	    <div class="break"></div>
+    </div>
+    <form>
+        <input type="hidden" name="none" value="<TMPL_VAR NAME=PARAM_PAGE> <TMPL_VAR NAME=BLEAT_TIME> <TMPL_VAR NAME=BLEAT_TEXT> <TMPL_VAR NAME=BLEAT_ID> <TMPL_VAR NAME=PARAM_PROFILE> <TMPL_VAR NAME=BLEAT_TIME> <TMPL_LOOP NAME=LOOP_REPLIES> </TMPL_LOOP>">
+    </form>
+</TMPL_LOOP>
