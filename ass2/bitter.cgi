@@ -1362,11 +1362,13 @@ sub handle_yes {
 
     # Suspended accounts can go nowhere until they confirm activation
     if (account_suspended($param_username)) {
-        handle_suspended();
-
         # Need be be able to logout and reactivate on suspension
-		handle_action_logout();
-		handle_action_reactivate();
+        if (($param_page eq "logout") or ($param_action eq "reactivate")) {
+			handle_action_logout();
+			handle_action_reactivate();
+		} else {
+			handle_suspended();
+		}
         return;
     }
 
