@@ -1094,6 +1094,7 @@ sub handle_action_save {
 	if ($param_suspend) {
 	    if ($param_suspend eq $store{'users'}{$param_username}{'password'}) {
 	        $store{'users'}{$param_username}{'suspended'} = TRUE;
+	        $store_updated = TRUE;
 	        $param_page = "logout";
 	        handle_action_logout();
 	        $param_action = "forcelog";
