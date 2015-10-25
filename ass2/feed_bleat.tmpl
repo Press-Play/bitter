@@ -3,7 +3,9 @@
 		<div class="card">
 			<div class="bleat_display">
 				<div class="select_me"></div>
-				<div class="bleat_display_text"><div class="text"><TMPL_VAR NAME=BLEAT_TEXT></div></div>
+				<a href="bitter.cgi?page=bleat&bid=<TMPL_VAR NAME=BLEAT_ID>" class="bleat_display_text_wrap">
+				    <div class="bleat_display_text"><div class="text"><TMPL_VAR NAME=BLEAT_TEXT></div></div>
+				</a>
 				<div class="bleat_display_profile">
 					<div class="info_container">
 					    <a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=PROFILE_USERNAME>" style="pointer-events: all !important">
@@ -25,7 +27,9 @@
 		<TMPL_LOOP NAME=LOOP_REPLIES>
 			<div class="card card_reply sub minimise">
 				<div class="bleat_display">
-					<div class="bleat_display_text"><div class="text"><TMPL_VAR NAME=REPLY_TEXT></div></div>
+				    <a href="bitter.cgi?page=bleat&bid=<TMPL_VAR NAME=REPLY_ID>" class="bleat_display_text_wrap">
+					    <div class="bleat_display_text"><div class="text"><TMPL_VAR NAME=REPLY_TEXT></div></div>
+					</a>
 					<div class="bleat_display_profile">
 						<div class="info_container">
 						    <a href="bitter.cgi?page=profile&profile=<TMPL_VAR NAME=REPLY_USERNAME>" style="pointer-events: all !important">
@@ -55,4 +59,7 @@
 	<div class="break"></div>
 </TMPL_LOOP>
 <div class="break"></div>
-<TMPL_INCLUDE NAME="card_pagenav.tmpl">
+<TMPL_IF PAGE_BLEAT>
+<TMPL_ELSE>
+    <TMPL_INCLUDE NAME="card_pagenav.tmpl">
+</TMPL_IF>

@@ -20,6 +20,10 @@
 	resize: none;
 }
 
+.bleat_input_bleater {
+    width: calc(70% - 10px) !important;
+}
+
 .bleat_input:focus{
 	border: 2px solid #228B22;
 	/*height: 100px;
@@ -41,6 +45,18 @@
 	font-weight: 500;
 	font-size: 14px;
 	color: #fff;
+}
+
+.bleat_word_count {
+    width: calc(10% - 10px);
+    text-align: center;
+    position: relative;
+}
+.bleat_word_count_text {
+    top: 50%;
+    position: relative;
+    transform: translate(0, -50%);
+    font-size: 18px;
 }
 
 /*
@@ -97,11 +113,17 @@
 		.option img:hover {
 			opacity: .9;
 		}*/
-
-	.bleat_display_text {
-		width: 50%;
+    .bleat_display_text_wrap {
+        pointer-events: all !important;
+        width: 50%;
 		height: inherit;
 		position: relative;
+    }
+
+	.bleat_display_text {
+		/*width: 50%;
+		height: inherit;
+		position: relative;*/
 	}
 		.text {
 			position: absolute;
@@ -140,4 +162,11 @@
 			font-size: 12px;
 			/*height: calc(100%/3);*/
 		}
+		
+.bleat_op {
+    font-size: 24px;
+    font-weight: 800;
+    text-align: center;
+    padding: 10px;
+}
 

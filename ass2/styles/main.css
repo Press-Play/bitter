@@ -33,8 +33,7 @@
 		display: flex;
 		display: -webkit-flex;
 		height: auto;
-		width: auto;
-        min-width: 400px;
+        width: 400px;
 		padding: 10px;
 		position: fixed;
 		left: 50%;
