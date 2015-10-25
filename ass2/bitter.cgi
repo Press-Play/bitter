@@ -1261,7 +1261,7 @@ sub handle_action_recover {
 	debug("Should be successful recovery");
 }
 
-sub handle_action_reactivate() {
+sub handle_action_reactivate {
     return if (!$param_action);
 	return if ($param_action ne "reactivate");
 	$store{'users'}{$param_username}{'suspended'} = FALSE;
@@ -1336,12 +1336,12 @@ sub handle_persistence {
 #
 #	SUSPENSION HANDLES
 #
-sub account_suspended() {
+sub account_suspended {
     if (!$store{'users'}{$_[0]}{'suspended'}) { return FALSE; }
     return $store{'users'}{$_[0]}{'suspended'};
 }
 
-sub handle_suspended() {
+sub handle_suspended {
 	$template->param(PAGE_HOME => FALSE);
     $template->param(PAGE_SUSPENDED => TRUE);
 }
