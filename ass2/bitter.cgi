@@ -1363,22 +1363,24 @@ sub handle_yes {
     # Suspended accounts can go nowhere until they confirm activation
     if (account_suspended($param_username)) {
         handle_suspended();
+
+        # Need be be able to logout and reactivate on suspension
+		handle_action_logout();
+		handle_action_reactivate();
         return;
     }
 
 	# Handles (actions)
 	handle_action_next();	# These guys need to be first
 	handle_action_back();
-
+	handle_action_logout();
 	handle_action_listen();
 	handle_action_bleat();
-	handle_action_logout();
 	handle_action_search();
 	handle_action_save();
 	handle_action_reset();
 	handle_action_upload();
 	handle_action_delete();
-	handle_action_reactivate();
 	
 	# Some actions log the user out
 	if ($param_action eq "forcelog") {
