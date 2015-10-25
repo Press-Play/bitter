@@ -99,7 +99,7 @@ $param_suspend      = param('suspend');
 $param_notification = param('notification');
 # GET - Sent in url
 $param_action		= param('action');      if (!$param_action) { $param_action = 'none' };
-$param_page			= param('page');
+$param_page			= param('page');        if (!$param_page)   { $param_page = 'none' };
 $param_profile		= param('profile');		# Username
 $param_pagination 	= param('n');			#if (!$param_pagination) { $param_pagination = '10' };
 $param_set 			= param('p');			if (!$param_set) 		{ $param_set 		= '0'; }; 	# Apparently, the whole concept of "or" doesnt work, idk
@@ -402,6 +402,7 @@ sub valid_credentials {
 	if (missing_credentials()) 						{ return C_MISSING; }
 	if (!exists $store{'users'}{$param_username}) 	{ return C_BAD_USERNAME; }
 
+    if (!$store{'users'}{$param_username}{'password'}) { return C_BAD_PASSWORD; }
 	if ($param_password eq $store{'users'}{$param_username}{'password'}) {
 		return C_VALID;
 	} else {
@@ -1090,16 +1091,28 @@ sub handle_action_save {
 	# Handle account settings suspend/delete/notifications
 	if ($param_suspend) {
 	    if ($param_suspend eq $store{'users'}{$param_username}{'password'}) {
+	        $store{'users'}{$param_username}{'suspended'} = TRUE;
 	        handle_action_logout();
-	        handle_no();
 	    } else {
 	        $template->param(MESSAGE => "Incorrect password");
 	    }
 	}
 	if ($param_delete) {
-	    if ($param_suspend eq $store{'users'}{$param_username}{'password'}) {
+	    if ($param_delete eq $store{'users'}{$param_username}{'password'}) {
+	        #foreach $element (%{$store{'users'}{$param_username}}) {
+	        #    debug("Deleting shiface $element");
+	        #    undef $store{'users'}{$param_username}{$element};
+	        #}
+	        $store{'users'}{$param_username} = undef;
+	        delete $store{'users'}{$param_username};
+	        $store_updated = TRUE;
+	        # Also delete pics
+	        $param_action = "deletephoto";
+	        handle_action_delete();
+	        $param_action = "deletebackground";
+	        handle_action_delete();
+	        
 	        handle_action_logout();
-	        handle_no();
 	    } else {
 	        $template->param(MESSAGE => "Incorrect password");
 	    }
@@ -1245,6 +1258,12 @@ sub handle_action_recover {
 	debug("Should be successful recovery");
 }
 
+sub handle_action_reactivate() {
+    return if (!$param_action);
+	return if ($param_action ne "reactivate");
+	$store{'users'}{$param_username}{'suspended'} = FALSE;
+}
+
 #
 #	PAGE HANDLES
 #
@@ -1307,6 +1326,17 @@ sub handle_persistence {
 	$store_updated = TRUE;
 }
 
+#
+#	SUSPENSION HANDLES
+#
+sub account_suspended() {
+    if (!$store{'users'}{$param_username}{'suspended'}) { return FALSE; }
+    return $store{'users'}{$param_username}{'suspended'};
+}
+
+sub handle_suspended() {
+    $template->param(PAGE_SUSPENDED => TRUE);
+}
 
 # ------------------------------------------------------------
 # 	SUB RESPONSE HANDLERS
@@ -1321,6 +1351,12 @@ sub handle_yes {
 	# Always make sure username parameter variable set
 	parameters_set_username();
 
+    # Suspended accounts can go nowhere until they confirm activation
+    if (account_suspended()) {
+        handle_suspended();
+        return;
+    }
+
 	# Handles (actions)
 	handle_action_next();	# These guys need to be first
 	handle_action_back();
@@ -1333,6 +1369,12 @@ sub handle_yes {
 	handle_action_reset();
 	handle_action_upload();
 	handle_action_delete();
+	
+	# Some actions log the user out
+	if (!logged_in()) {
+	    debug("An action logged us out");
+	    return;
+	}
 
 	parameters_set_base($param_username);
 	if (!$param_page or ($param_page eq "home")) {
