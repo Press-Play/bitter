@@ -24,7 +24,7 @@ LEVEL 3
 ✓✓	Uploading & Deleting Images (Level 3)
 ✓✓	Editing Infortmation (Level 3)
 	Deleting Bleats (Level 3)
-	Suspending/Deleting Bitter Account (Level 3)
+✓	Suspending/Deleting Bitter Account (Level 3)
 ✓✓	Notifications (Level 3)
 	Bleats Attachment (Level 3)
 

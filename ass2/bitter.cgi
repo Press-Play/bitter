@@ -548,6 +548,8 @@ sub parameters_del_listen {
 # Returns an array of the ids of the bleats the given user has posted
 sub parameters_get_bleat_ids {
 	$_given_user = $_[0];
+	# Check account suspension
+	return if (account_suspended($_given_user));
 	return \@{$store{'users'}{$_given_user}{'bleats'}};
 }
 
@@ -651,6 +653,9 @@ sub parameters_set_feeds {
 
 		my %temp_data;	# "my" keyword needed for a fresh hash
 		my %bleat_me = %{parameters_get_bleatdata($bleat_id)};
+		
+		# Check account suspension
+		next if (account_suspended($bleat_me{'username'}));
 
 		# Fix up time formatting
 		($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($bleat_me{'time'});
@@ -683,6 +688,8 @@ sub parameters_set_feeds {
 				# debug("Setting reply for $bleat_id - $reply");
 				my %temp_data_reply;
 				my %bleat_me_reply = %{parameters_get_bleatdata($reply)};
+				# Check account suspension
+				next if (account_suspended($bleat_me_reply{'username'}));
 				# Fix up time formatting
 				($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($bleat_me_reply{'time'});
 				$year = $year + 1900;
