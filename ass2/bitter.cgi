@@ -1094,7 +1094,7 @@ sub handle_action_save {
 	if ($param_suspend) {
 	    if ($param_suspend eq $store{'users'}{$param_username}{'password'}) {
 	        $store{'users'}{$param_username}{'suspended'} = TRUE;
-	        $param_action = "logout";
+	        $param_page = "logout";
 	        handle_action_logout();
 	        $param_action = "forcelog";
 	        return;
@@ -1112,7 +1112,7 @@ sub handle_action_save {
 	        handle_action_delete();
 	        $param_action = "deletebackground";
 	        handle_action_delete();
-	        $param_action = "logout";
+	        $param_page = "logout";
 	        handle_action_logout();
 	        $param_action = "forcelog";
 	        return;
@@ -1376,7 +1376,7 @@ sub handle_yes {
 	# Some actions log the user out
 	if ($param_action eq "forcelog") {
 	    debug("An action logged us out");
-	    # handle_no();
+	    handle_no();
 	    return;
 	}
 
