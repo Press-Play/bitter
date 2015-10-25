@@ -1275,6 +1275,10 @@ sub handle_page_profile {
 	return if (!$param_profile);
 	return if (!$param_page);
 	return if ($param_page ne "profile");
+
+	# Check account suspension
+	return if (account_suspended($param_profile));
+
 	$template->param(PAGE_PROFILE => TRUE);
 	$template->param(PAGE_HOME => FALSE);
 	#if (!-d $DATASET_PATH_CGI."/users/${param_username}")
@@ -1333,11 +1337,12 @@ sub handle_persistence {
 #	SUSPENSION HANDLES
 #
 sub account_suspended() {
-    if (!$store{'users'}{$param_username}{'suspended'}) { return FALSE; }
-    return $store{'users'}{$param_username}{'suspended'};
+    if (!$store{'users'}{$_[0]}{'suspended'}) { return FALSE; }
+    return $store{'users'}{$_[0]}{'suspended'};
 }
 
 sub handle_suspended() {
+	$template->param(PAGE_HOME => FALSE);
     $template->param(PAGE_SUSPENDED => TRUE);
 }
 
@@ -1355,7 +1360,7 @@ sub handle_yes {
 	parameters_set_username();
 
     # Suspended accounts can go nowhere until they confirm activation
-    if (account_suspended()) {
+    if (account_suspended($param_username)) {
         handle_suspended();
         return;
     }
