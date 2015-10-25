@@ -1378,6 +1378,7 @@ sub handle_yes {
 	handle_action_reset();
 	handle_action_upload();
 	handle_action_delete();
+	handle_action_reactivate();
 	
 	# Some actions log the user out
 	if ($param_action eq "forcelog") {
