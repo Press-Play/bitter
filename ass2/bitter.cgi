@@ -1376,7 +1376,7 @@ sub handle_yes {
 	# Some actions log the user out
 	if ($param_action eq "forcelog") {
 	    debug("An action logged us out");
-	    handle_no();
+	    # handle_no();
 	    return;
 	}
 
