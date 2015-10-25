@@ -1092,6 +1092,7 @@ sub handle_action_save {
 	if ($param_suspend) {
 	    if ($param_suspend eq $store{'users'}{$param_username}{'password'}) {
 	        $store{'users'}{$param_username}{'suspended'} = TRUE;
+	        $param_action = "logout";
 	        handle_action_logout();
 	    } else {
 	        $template->param(MESSAGE => "Incorrect password");
@@ -1099,11 +1100,7 @@ sub handle_action_save {
 	}
 	if ($param_delete) {
 	    if ($param_delete eq $store{'users'}{$param_username}{'password'}) {
-	        #foreach $element (%{$store{'users'}{$param_username}}) {
-	        #    debug("Deleting shiface $element");
-	        #    undef $store{'users'}{$param_username}{$element};
-	        #}
-	        $store{'users'}{$param_username} = undef;
+	        # $store{'users'}{$param_username} = undef;
 	        delete $store{'users'}{$param_username};
 	        $store_updated = TRUE;
 	        # Also delete pics
@@ -1111,7 +1108,7 @@ sub handle_action_save {
 	        handle_action_delete();
 	        $param_action = "deletebackground";
 	        handle_action_delete();
-	        
+	        $param_action = "logout";
 	        handle_action_logout();
 	    } else {
 	        $template->param(MESSAGE => "Incorrect password");
@@ -1373,6 +1370,7 @@ sub handle_yes {
 	# Some actions log the user out
 	if (!logged_in()) {
 	    debug("An action logged us out");
+	    handle_no();
 	    return;
 	}
 
