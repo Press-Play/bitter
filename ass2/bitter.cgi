@@ -402,7 +402,7 @@ sub valid_credentials {
 	if (missing_credentials()) 						{ return C_MISSING; }
 	if (!exists $store{'users'}{$param_username}) 	{ return C_BAD_USERNAME; }
 
-    if (!$store{'users'}{$param_username}{'password'}) { return C_BAD_PASSWORD; }
+    # if (!$store{'users'}{$param_username}{'password'}) { return C_BAD_PASSWORD; }
 	if ($param_password eq $store{'users'}{$param_username}{'password'}) {
 		return C_VALID;
 	} else {
@@ -1094,6 +1094,8 @@ sub handle_action_save {
 	        $store{'users'}{$param_username}{'suspended'} = TRUE;
 	        $param_action = "logout";
 	        handle_action_logout();
+	        $param_action = "forcelog";
+	        return;
 	    } else {
 	        $template->param(MESSAGE => "Incorrect password");
 	    }
@@ -1110,6 +1112,8 @@ sub handle_action_save {
 	        handle_action_delete();
 	        $param_action = "logout";
 	        handle_action_logout();
+	        $param_action = "forcelog";
+	        return;
 	    } else {
 	        $template->param(MESSAGE => "Incorrect password");
 	    }
@@ -1368,7 +1372,7 @@ sub handle_yes {
 	handle_action_delete();
 	
 	# Some actions log the user out
-	if (!logged_in()) {
+	if ($param_action eq "forcelog") {
 	    debug("An action logged us out");
 	    handle_no();
 	    return;
