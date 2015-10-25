@@ -1267,6 +1267,7 @@ sub handle_action_reactivate {
 	return if ($param_action ne "reactivate");
 	# $store{'users'}{$param_username}{'suspended'} = FALSE;
 	undef $store{'users'}{$param_username}{'suspended'};
+	$store_updated = TRUE;
 }
 
 #
