@@ -938,6 +938,8 @@ sub handle_action_logout {
 	return if (!$param_page);
 	return if ($param_page ne "logout");
 	cookie_logout_session();
+	$param_username = "";
+	$param_password = "";
 	$template->param(LOGGED_IN => FALSE);
 }
 
@@ -1122,7 +1124,7 @@ sub handle_action_save {
 	    #$template->param(MESSAGE => "param_notification: $param_notification");
 	    $store{'users'}{$param_username}{'notifications'} = TRUE;
 	} else {
-	     $store{'users'}{$param_username}{'notifications'} = FALSE;
+	    $store{'users'}{$param_username}{'notifications'} = FALSE;
 	}
 }
 
