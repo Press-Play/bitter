@@ -1,7 +1,130 @@
+commit a9b04a166816355c7a73ea1abf2c8c5258819e2a
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Sun Dec 30 15:57:14 2018 +1100
+
+    Move bitter files into root and remove other things
+
+commit 3a27bcc50ff565d20b07b91f845a75eeefcb98a0
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 10:22:51 2015 +1100
+
+    Suspension checks
+
+commit 0637e7d4aa115f212358633048da85aa8db5b387
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 10:14:50 2015 +1100
+
+    pls update store..
+
+commit 554448444530146d6f3747e4730345325df38e63
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 10:13:40 2015 +1100
+
+    undef
+
+commit 027209526f062951948c5867e0740f13174d7f69
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 10:08:23 2015 +1100
+
+    Logic
+
+commit af3aa9dae507fdc4b25259b14ffee005f9d9c184
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 10:05:45 2015 +1100
+
+    I just want HD
+
+commit 300ab39564328f6a237067e71f585e71b3f7027a
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 10:03:16 2015 +1100
+
+    More fixes - I hate committing to pull from cse
+
+commit d31b4469123338da6eb5b6c62e89efad25860dcd
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 09:57:54 2015 +1100
+
+    I found it
+
+commit f38bbb3c0008b2f920a5fa251db8f2a51a0753bd
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 09:52:31 2015 +1100
+
+    syntax err
+
+commit 0ff677229da335a8c4064532e10e68a7a6921d43
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 09:47:21 2015 +1100
+
+    Suspension
+
+commit 04f766acacccc894660ee44669edfff52a4a0e39
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 08:49:01 2015 +1100
+
+    Last try
+
+commit d20c57ebc8d7fa86ac83ba4e39b3b41e91323a1e
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 08:45:50 2015 +1100
+
+    Give up soon
+
+commit 6c697b5183d1292db0bc9b63a3b005ea01189742
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 08:36:30 2015 +1100
+
+    Account deletion triple fix
+
+commit 32dc259279e31dc16c00053550cb2bfacb1708d8
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 08:30:48 2015 +1100
+
+    Account deletion double fix
+
+commit 2fccf5f6b5775113b5ea600120e2be148f4317f9
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Mon Oct 26 07:53:16 2015 +1100
+
+    Account deletion should be fixed
+
+commit e8fba08f7ed404396771871e2e307e74f5334652
+Merge: fdadfaf d0bff61
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Sun Oct 25 23:34:26 2015 +1100
+
+    Merge branch 'cse' of https://gitlab.cse.unsw.EDU.AU/z3462277/15s2-comp2041-cgi into cse
+
+commit d0bff615e7d17f436d9fcea9e8a4ada21f6c04c6
+Author: Vu Khanh Nguyen <vkng587@cse.unsw.EDU.AU>
+Date:   Sun Oct 25 23:33:55 2015 +1100
+
+    Adding more features cause yolo
+
+commit fdadfafe025447df041c3e2670300299552553db
+Merge: be9b5d9 2d2e245
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Sun Oct 25 14:06:06 2015 +1100
+
+    Merge branch 'cse' of https://gitlab.cse.unsw.EDU.AU/z3462277/15s2-comp2041-cgi into cse
+
+commit be9b5d9876f24231a62437e8b2f122db295ea628
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Sun Oct 25 14:05:36 2015 +1100
+
+    Checklist update
+
+commit 2d2e245a66de1080a51ec42f2ef36711425cf3ef
 Author: vkng587 <vkng587@cse.unsw.EDU.AU>
 Date:   Sun Oct 25 13:52:53 2015 +1100
 
     Bug fixes and double-checking for final submission
+
+commit f31093214504a307a2946089caeb7b6c28c1b3e2
+Author: Khanh Nguyen <khanh.phonic.nguyen@gmail.com>
+Date:   Sun Oct 25 12:05:10 2015 +1100
+
+    Checklist update
 
 commit 3d6d9056d4b31e87f09150ba45b17a05bac885c0
 Author: vkng587 <vkng587@cse.unsw.EDU.AU>
