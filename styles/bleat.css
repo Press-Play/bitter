@@ -54,9 +54,8 @@
 }
 .bleat_word_count_text {
     top: 50%;
-    left: 50%;
-    position: absolute;
-    transform: translate(-50%, -50%);
+    position: relative;
+    transform: translate(0, -50%);
     font-size: 18px;
 }
 
