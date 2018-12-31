@@ -66,10 +66,10 @@ use constant {
 
 # Variable configurations set inside the cgi script
 $CONFIG_DEBUG 		= FALSE;
-$PATH_ROOT_HTML		= "";
+$PATH_ROOT_HTML		= "../";
 $DATASET_SIZE 		= "large";
 $DATASET_PATH_CGI 	= "dataset-${DATASET_SIZE}";#"dataset-${DATASET_SIZE}";
-$DATASET_PATH_HTML	= "dataset-${DATASET_SIZE}";#"../dataset-${DATASET_SIZE}";
+$DATASET_PATH_HTML	= "../dataset-${DATASET_SIZE}";#"dataset-${DATASET_SIZE}";
 $DATASET_MODE		= DB_MIGRATE;
 
 # Global database storage
@@ -149,7 +149,7 @@ $cookie_username	= $cookies{'session'}->value() 	if $cookies{'session'};
 # Reset all template variables to defaults
 $template->param(LOGGED_IN 			=> FALSE);
 $template->param(PROFILE_USERNAME 	=> "Default");
-$template->param(PROFILE_PICTURE 	=> $PATH_ROOT_HTML."/images/icon_default_256.png");
+$template->param(PROFILE_PICTURE 	=> $PATH_ROOT_HTML."images/icon_default_256.png");
 $template->param(PROFILE_BACKGROUND => "");
 $template->param(PROFILE_BLEATS 	=> 0);
 $template->param(PROFILE_LISTENERS 	=> 0);
@@ -247,7 +247,7 @@ sub storable_new {
 		if (-d $DATASET_PATH_CGI."/users/${key}") {
 			$count++;
 			# debug("-------- User found: $key");
-			open(F, "<", $DATASET_PATH_CGI."/users/${key}/bleats.txt") or die;
+			open(F, "<", $DATASET_PATH_CGI."/users/${key}/bleats.txt") or die $DATASET_PATH_CGI."/users/${key}/bleats.txt";
 				my @_bleats = <F>;
 				@_bleats = grep { $_ =~ /[0-9]+/ } @_bleats;
 				foreach $_b (@_bleats) {chomp $_b}
@@ -402,7 +402,7 @@ sub valid_credentials {
 	if (missing_credentials()) 						{ return C_MISSING; }
 	if (!exists $store{'users'}{$param_username}) 	{ return C_BAD_USERNAME; }
 
-    # if (!$store{'users'}{$param_username}{'password'}) { return C_BAD_PASSWORD; }
+    if (!$store{'users'}{$param_username}{'password'}) { return C_BAD_PASSWORD; }
 	if ($param_password eq $store{'users'}{$param_username}{'password'}) {
 		return C_VALID;
 	} else {
@@ -548,8 +548,6 @@ sub parameters_del_listen {
 # Returns an array of the ids of the bleats the given user has posted
 sub parameters_get_bleat_ids {
 	$_given_user = $_[0];
-	# Check account suspension
-	return if (account_suspended($_given_user));
 	return \@{$store{'users'}{$_given_user}{'bleats'}};
 }
 
@@ -653,9 +651,6 @@ sub parameters_set_feeds {
 
 		my %temp_data;	# "my" keyword needed for a fresh hash
 		my %bleat_me = %{parameters_get_bleatdata($bleat_id)};
-		
-		# Check account suspension
-		next if (account_suspended($bleat_me{'username'}));
 
 		# Fix up time formatting
 		($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($bleat_me{'time'});
@@ -688,8 +683,6 @@ sub parameters_set_feeds {
 				# debug("Setting reply for $bleat_id - $reply");
 				my %temp_data_reply;
 				my %bleat_me_reply = %{parameters_get_bleatdata($reply)};
-				# Check account suspension
-				next if (account_suspended($bleat_me_reply{'username'}));
 				# Fix up time formatting
 				($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($bleat_me_reply{'time'});
 				$year = $year + 1900;
@@ -945,8 +938,6 @@ sub handle_action_logout {
 	return if (!$param_page);
 	return if ($param_page ne "logout");
 	cookie_logout_session();
-	$param_username = "";
-	$param_password = "";
 	$template->param(LOGGED_IN => FALSE);
 }
 
@@ -1101,11 +1092,7 @@ sub handle_action_save {
 	if ($param_suspend) {
 	    if ($param_suspend eq $store{'users'}{$param_username}{'password'}) {
 	        $store{'users'}{$param_username}{'suspended'} = TRUE;
-	        $store_updated = TRUE;
-	        $param_page = "logout";
 	        handle_action_logout();
-	        $param_action = "forcelog";
-	        return;
 	    } else {
 	        $template->param(MESSAGE => "Incorrect password");
 	    }
@@ -1120,10 +1107,8 @@ sub handle_action_save {
 	        handle_action_delete();
 	        $param_action = "deletebackground";
 	        handle_action_delete();
-	        $param_page = "logout";
+	        
 	        handle_action_logout();
-	        $param_action = "forcelog";
-	        return;
 	    } else {
 	        $template->param(MESSAGE => "Incorrect password");
 	    }
@@ -1132,7 +1117,7 @@ sub handle_action_save {
 	    #$template->param(MESSAGE => "param_notification: $param_notification");
 	    $store{'users'}{$param_username}{'notifications'} = TRUE;
 	} else {
-	    $store{'users'}{$param_username}{'notifications'} = FALSE;
+	     $store{'users'}{$param_username}{'notifications'} = FALSE;
 	}
 }
 
@@ -1269,12 +1254,10 @@ sub handle_action_recover {
 	debug("Should be successful recovery");
 }
 
-sub handle_action_reactivate {
+sub handle_action_reactivate() {
     return if (!$param_action);
 	return if ($param_action ne "reactivate");
-	# $store{'users'}{$param_username}{'suspended'} = FALSE;
-	undef $store{'users'}{$param_username}{'suspended'};
-	$store_updated = TRUE;
+	$store{'users'}{$param_username}{'suspended'} = FALSE;
 }
 
 #
@@ -1285,10 +1268,6 @@ sub handle_page_profile {
 	return if (!$param_profile);
 	return if (!$param_page);
 	return if ($param_page ne "profile");
-
-	# Check account suspension
-	return if (account_suspended($param_profile));
-
 	$template->param(PAGE_PROFILE => TRUE);
 	$template->param(PAGE_HOME => FALSE);
 	#if (!-d $DATASET_PATH_CGI."/users/${param_username}")
@@ -1346,13 +1325,12 @@ sub handle_persistence {
 #
 #	SUSPENSION HANDLES
 #
-sub account_suspended {
-    if (!$store{'users'}{$_[0]}{'suspended'}) { return FALSE; }
-    return $store{'users'}{$_[0]}{'suspended'};
+sub account_suspended() {
+    if (!$store{'users'}{$param_username}{'suspended'}) { return FALSE; }
+    return $store{'users'}{$param_username}{'suspended'};
 }
 
-sub handle_suspended {
-	$template->param(PAGE_HOME => FALSE);
+sub handle_suspended() {
     $template->param(PAGE_SUSPENDED => TRUE);
 }
 
@@ -1370,23 +1348,18 @@ sub handle_yes {
 	parameters_set_username();
 
     # Suspended accounts can go nowhere until they confirm activation
-    if (account_suspended($param_username)) {
-        # Need be be able to logout and reactivate on suspension
-        if (($param_page eq "logout") or ($param_action eq "reactivate")) {
-			handle_action_logout();
-			handle_action_reactivate();
-		} else {
-			handle_suspended();
-		}
+    if (account_suspended()) {
+        handle_suspended();
         return;
     }
 
 	# Handles (actions)
 	handle_action_next();	# These guys need to be first
 	handle_action_back();
-	handle_action_logout();
+
 	handle_action_listen();
 	handle_action_bleat();
+	handle_action_logout();
 	handle_action_search();
 	handle_action_save();
 	handle_action_reset();
@@ -1394,9 +1367,8 @@ sub handle_yes {
 	handle_action_delete();
 	
 	# Some actions log the user out
-	if ($param_action eq "forcelog") {
+	if (!logged_in()) {
 	    debug("An action logged us out");
-	    handle_no();
 	    return;
 	}
 
