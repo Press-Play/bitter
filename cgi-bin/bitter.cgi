@@ -1441,7 +1441,8 @@ if ($param_file_ground or $param_file_photo) {
 	print "Expires: 0\n";                # Expire immediately
 	print "Pragma: no-cache\n";          # Work as NPH
 }
-print "Content-Type: text/html\n\n";
+print "Content-Type: text/html\r\n";
+print "\r\n";
 print $template->output if (!$CONFIG_DEBUG);
 
 storable_update();
