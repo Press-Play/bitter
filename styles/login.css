@@ -3,7 +3,7 @@
 	height: 200px;
 }
 
-	.login_logo img{
+	.login_logo img {
 		max-height: 100%;
 		max-width: 100%;
 		top: 50%;
@@ -79,18 +79,18 @@
 	pointer-events: all;
 	text-align: center;
 	text-decoration: none;
+	font-size: 10px;
+	padding-top: 5px;
 }
 
-	.login_signup p {
-		font-size: 10px;
-		padding-top: 5px;
+	.login_signup a {
 		color: #228B22;
-		font-weight: 800;
 	}
-	.login_forgot p {
-		font-size: 10px;
-		padding-top: 5px;
+	.login_forgot a {
 		color: #979797;
+	}
+	.login_selected {
+		font-weight: 800;
 	}
 
 .login_about {

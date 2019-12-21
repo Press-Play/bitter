@@ -1397,6 +1397,9 @@ sub handle_no {
 	} elsif ($param_page eq "forgot") {
 		$template->param(PAGE_FORGOT => TRUE);
 		$template->param(PAGE_LOGIN => FALSE);
+	} elsif ($param_page eq "about") {
+		$template->param(PAGE_ABOUT => TRUE);
+		$template->param(PAGE_LOGIN => FALSE);
 	} else {
 		# Display user a message
 		$credential_identifier = valid_credentials();
