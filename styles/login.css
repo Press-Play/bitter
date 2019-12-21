@@ -25,6 +25,7 @@
 	padding-bottom: 0px;
 	height: auto;
 }
+
 .login_input {
 	width: 40%;
 	height: 30px;
@@ -91,3 +92,11 @@
 		padding-top: 5px;
 		color: #979797;
 	}
+
+.login_about {
+	padding-left: 36px;
+    padding-right: 36px;
+    line-height: 16pt;
+    margin-bottom: 20px;
+    text-align: center;
+}
